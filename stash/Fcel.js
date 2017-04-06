@@ -17,6 +17,7 @@ class Fcel {
 		this.prev_clientX = 0;
 		this.prev_clientY = 0;
 
+		this.viewPoint = {x: 0, y: 0};
 		this.maxNumberOfLayers = 32;
 		this.currentLayer = 0;
 		this.Layers = new Array();
@@ -244,10 +245,23 @@ class Fcel {
 		this.CellsID++;
 		cell.className = "Fcel";
 		cell.type = "text";
-		cell.style.top = window.scrollY - style.top + (Math.min(window.innerHeight, style.height) - 100) * Math.random() + "px";
-		cell.style.left = window.scrollX - style.left + (Math.min(window.innerWidth, style.width) - 100) * Math.random() + "px";
+		cell.absolutePosition = {
+			x: (Math.min(window.innerHeight, parseInt(style.height, 10)) - 100) * Math.random(),
+			y: (Math.min(window.innerWidth, parseInt(style.width, 10)) - 100) * Math.random()
+		    };
+		cell.style.top = cell.absolutePosition.x - this.viewPoint.x + "px";
+		cell.style.left = cell.absolutePosition.y - this.viewPoint.y + "px";
 		cell.rootInstance = this;
 		cell.addEventListener("mousedown", function (e) { e.currentTarget.rootInstance.selectCell(e); }, false);
+		cell.addEventListener(
+		    "windowdrag",
+		    function (e) {
+			    let win = e.detail.target;
+			    let root = win.rootInstance;
+			    win.absolutePosition.x = e.detail.position.x - root.viewPoint.x;
+			    win.absolutePosition.y = e.detail.position.y - root.viewPoint.y;
+		    },
+		    false);
 		cell.edges = new Array();
 		this.pool.appendChild(cell);
 		this.Cells.push(cell);

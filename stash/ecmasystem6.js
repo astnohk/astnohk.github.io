@@ -7,7 +7,7 @@ function
 GlobalEventClass()
 {
 	this.event_functions = new Array();
-	var that = this;
+	let that = this;
 	this.add =
 	    function
 	    (event_func)
@@ -18,7 +18,7 @@ GlobalEventClass()
 	    function
 	    (event)
 	    {
-		    for (var i = 0; i < that.event_functions.length; i++) {
+		    for (let i = 0; i < that.event_functions.length; i++) {
 			    that.event_functions[i](event);
 		    }
 	    };
@@ -105,11 +105,11 @@ dragSelector(event)
 		return; // Avoid selecting without button press
 	}
 	// Get event target
-	var target = event.target;
+	let target = event.target;
 	if (event.type === "touchmove") {
 		target = document.elementFromPoint(event.touches[0].clientX, event.touches[0].clientY);
 	}
-	var element = null;
+	let element = null;
 	if (event.target.tagName === "SPAN") {
 		element = target;
 	} else if (target.parentNode.tagName === "SPAN") {
@@ -118,8 +118,8 @@ dragSelector(event)
 		return;
 	}
 	if (element.hasChildNodes()) {
-		var children = element.childNodes;
-		for (var i = 0; i < children.length; i++) {
+		let children = element.childNodes;
+		for (let i = 0; i < children.length; i++) {
 			if (children[i].tagName === "INPUT") {
 				if (firstChecked === 0) {
 					firstChecked = children[i].checked === false ? 1 : 2;
@@ -139,7 +139,7 @@ dragSelector(event)
 function
 openSettings()
 {
-	var settingsMenu = document.getElementById("MySettingsMenu");
+	let settingsMenu = document.getElementById("MySettingsMenu");
 	if (document.getElementById("MySettingsMenu") !== null) {
 		settingsMenu.remove();
 	} else {
@@ -148,7 +148,7 @@ openSettings()
 		settingsMenu.id = "MySettingsMenu";
 		document.querySelector("#UpperRightMenu div.MenuDropdown").appendChild(settingsMenu);
 		// Make menu
-		var changeBackground = document.createElement("div");
+		let changeBackground = document.createElement("div");
 		changeBackground.className = "classMySettingsMenu";
 		changeBackground.innerHTML = "Change Background";
 		changeBackground.addEventListener("click", openChangeBackground, false);
@@ -162,45 +162,45 @@ openChangeBackground()
 	if (document.getElementById("changeBackground") !== null) {
 		return;
 	}
-	var win = createWindow({id: "changeBackground", title: "Change Background Color"});
+	let win = createWindow({id: "changeBackground", title: "Change Background Color"});
 	win.style.left = "30%";
 	win.style.top = "30%";
 	win.style.width = "600px";
 	document.body.appendChild(win);
-	var board = document.createElement("div");
+	let board = document.createElement("div");
 	board.className = "BlackBoard";
 	win.appendChild(board);
-	var box_main = document.createElement("div");
+	let box_main = document.createElement("div");
 	box_main.className = "upperBox";
 	box_main.style.display = "flex";
 	box_main.style.flexWrap = "wrap";
 	box_main.style.justifyContent = "space-around";
 	board.appendChild(box_main);
-	var box_button = document.createElement("div");
+	let box_button = document.createElement("div");
 	box_button.className = "buttonBox";
 	box_button.style.display = "flex";
 	box_button.style.justifyContent = "flex_start";
 	box_button.style.marginTop = "16px";
 	board.appendChild(box_button);
 	// Create background list
-	var keys = Object.keys(listBackground);
-	var boxSize = 100;
-	var backgroundChanger =
+	let keys = Object.keys(listBackground);
+	let boxSize = 100;
+	let backgroundChanger =
 	    function (evnt) {
 		    UserSettings.BackgroundColor = evnt.target.id.slice(14);
 		    changeBackgroundColor();
 		    // Reset outline color
-		    var units = document.querySelectorAll("#changeBackground div.BlackBoard div.upperBox span");
-		    for (var i = 0; i < units.length; i++) {
+		    let units = document.querySelectorAll("#changeBackground div.BlackBoard div.upperBox span");
+		    for (let i = 0; i < units.length; i++) {
 			    units[i].style.outlineColor = "rgba(240, 240, 240, 0.8)";
 		    }
 		    // Set outline color of selected box
 		    evnt.target.style.outlineColor = "rgba(255, 40, 40, 0.8)";
 	    };
-	for (var i = 0; i < keys.length; i++) {
-		var colorId = keys[i];
-		var color = listBackground[keys[i]].color;
-		var unit = document.createElement("span");
+	for (let i = 0; i < keys.length; i++) {
+		let colorId = keys[i];
+		let color = listBackground[keys[i]].color;
+		let unit = document.createElement("span");
 		unit.id = "listBackground" + colorId;
 		unit.style.display = "flex";
 		unit.style.justifyContent = "center";
@@ -223,7 +223,7 @@ openChangeBackground()
 		box_main.appendChild(unit);
 	}
 	// Add save button
-	var save = document.createElement("input");
+	let save = document.createElement("input");
 	save.type = "button";
 	save.id = "saveChangeBackground";
 	save.value = "Save";
@@ -272,7 +272,7 @@ changeBackgroundColor()
 function
 saveSettings()
 {
-	var request = new XMLHttpRequest();
+	let request = new XMLHttpRequest();
 	request.open("POST", "cgi-bin/saveSettings.cgi", true);
 	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	request.onreadystatechange = function () {
@@ -288,7 +288,7 @@ saveSettings()
 			}
 		}
 	    };
-	var query = "id=" + encrypt(userId) +
+	let query = "id=" + encrypt(userId) +
 	    "&onetimepass=" + encrypt(onetimepass) +
 	    "&settings=" + encrypt(JSON.stringify(UserSettings));
 	request.send(query);
@@ -297,7 +297,7 @@ saveSettings()
 function
 loadSettings()
 {
-	var request = new XMLHttpRequest();
+	let request = new XMLHttpRequest();
 	request.open("POST", "cgi-bin/loadSettings.cgi", true);
 	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	request.onreadystatechange = function () {
@@ -306,7 +306,7 @@ loadSettings()
 				if (request.responseText.indexOf("Error:") >= 0) {
 					console.log("Error: Wrong ID or one-time password");
 				}
-				var tmp = JSON.parse(decrypt(request.responseText));
+				let tmp = JSON.parse(decrypt(request.responseText));
 				Object.assign(UserSettings, tmp);
 				console.log("settings loaded successfully");
 			} else {
@@ -314,7 +314,7 @@ loadSettings()
 			}
 		}
 	    };
-	var query = "id=" + encrypt(userId) +
+	let query = "id=" + encrypt(userId) +
 	    "&onetimepass=" + encrypt(onetimepass) +
 	    "&pubkey=" + cryptToClient.getPublicKey();
 	request.send(query);
@@ -328,12 +328,12 @@ function
 parseUnicodeInt(str, base)
 {
 	if (typeof base === "undefined") {
-		var base = 10;
+		let base = 10;
 	}
 	if (str.search(/[０-９]/) >= 0) {
-		var list = ["０", "１", "２", "３", "４", "５", "６", "７", "８", "９"];
-		for (var i = 0; i < 10; i++) {
-			var regex = new RegExp(list[i], "g");
+		let list = ["０", "１", "２", "３", "４", "５", "６", "７", "８", "９"];
+		for (let i = 0; i < 10; i++) {
+			let regex = new RegExp(list[i], "g");
 			str = str.replace(regex, String(i));
 		}
 	}
@@ -366,19 +366,19 @@ deBase64(str)
 function
 negateColor(color)
 {
-	var output;
+	let output;
 	if (color.indexOf("rgba") >= 0) {
 		output = "rgba(";
 	} else {
 		output = "rgb(";
 	}
-	var strings = color.substr(color.indexOf("(") + 1).split(',');
-	for (var i = 0; i < 3; i++) {
-		var intensity = parseInt(strings[i], 10);
+	let strings = color.substr(color.indexOf("(") + 1).split(',');
+	for (let i = 0; i < 3; i++) {
+		let intensity = parseInt(strings[i], 10);
 		output += (i > 0 ? ", " : "") + String(255 - intensity);
 	}
 	if (color.indexOf("rgba") >= 0) {
-		var alpha = parseFloat(strings[3]);
+		let alpha = parseFloat(strings[3]);
 		output += ", " + String(alpha) + ")";
 	} else {
 		output += ")";
@@ -393,7 +393,7 @@ negateColor(color)
 function
 makeFunctionButton(className, innerHTML, onClickFunction)
 {
-	var box = document.createElement("span");
+	let box = document.createElement("span");
 	box.className = className;
 	box.innerHTML = innerHTML;
 	box.addEventListener("click", onClickFunction, false);
@@ -404,11 +404,11 @@ makeFunctionButton(className, innerHTML, onClickFunction)
 function
 createWindow(parameter)
 {
-	var timeDuration = 300;
-	var win = document.createElement("div");
+	let timeDuration = 300;
+	let win = document.createElement("div");
 	win.opening = true;
 	// Check whether parameter is defined or not
-	var parameterDefined = true;
+	let parameterDefined = true;
 	if (typeof parameter === "undefined") {
 		parameterDefined = false;
 	}
@@ -436,7 +436,7 @@ createWindow(parameter)
 		// Title
 		if ("title" in parameter && win.dialog === false) {
 			// Add title
-			var title = document.createElement("span");
+			let title = document.createElement("span");
 			title.className = "classWindowTitle";
 			title.innerHTML = parameter.title;
 			title.addEventListener("mousedown", dragWindow, false);
@@ -463,7 +463,7 @@ createWindow(parameter)
 		    win.style.transitionDuration = String(timeDuration) + "ms";
 		    win.style.transitionTimingFunction = "linear";
 		    win.style.opacity = 0;
-		    var timeout = setTimeout(function ()
+		    let timeout = setTimeout(function ()
 			{
 				win.closeFunctionUserDefined();
 				win.remove();
@@ -473,7 +473,7 @@ createWindow(parameter)
 	    };
 	if (!(parameterDefined && "noCloseButton" in parameter)) {
 		// Append Close button
-		var closeBox = makeFunctionButton(
+		let closeBox = makeFunctionButton(
 		    "classButton",
 		    "Close",
 		    win.closeWindow);
@@ -492,7 +492,7 @@ createWindow(parameter)
 	}
 	WindowList.push(win);
 	// Add slider for resizing
-	var resize = document.createElement("div");
+	let resize = document.createElement("div");
 	resize.className = "classWindowResizer";
 	win.appendChild(resize);
 	// Finish opening process
@@ -502,7 +502,7 @@ createWindow(parameter)
 
 function createDraggableElement(elementName)
 {
-	var element = document.createElement(elementName);
+	let element = document.createElement(elementName);
 	element.windowClassName = "classDraggableElement";
 	element.addEventListener("mousedown", dragWindow, false);
 	element.addEventListener("touchstart", dragWindow, false);
@@ -511,29 +511,29 @@ function createDraggableElement(elementName)
 
 function raiseWindowList(target)
 {
-	var index = WindowList.indexOf(target);
+	let index = WindowList.indexOf(target);
 	WindowList.splice(index, 1);
 	WindowList.push(target);
-	for (var i = 0; i < WindowList.length; i++) {
+	for (let i = 0; i < WindowList.length; i++) {
 		WindowList[i].style.zIndex = String(WindowZIndexOffset + i);
 	}
 }
 
 function lowerWindowList(target)
 {
-	var index = WindowList.indexOf(target);
+	let index = WindowList.indexOf(target);
 	WindowList.splice(index, 1);
 	WindowList.unshift(target);
-	for (var i = 0; i < WindowList.length; i++) {
+	for (let i = 0; i < WindowList.length; i++) {
 		WindowList[i].style.zIndex = String(WindowZIndexOffset + i);
 	}
 }
 
 function spliceWindowList(target)
 {
-	var index = WindowList.indexOf(target);
+	let index = WindowList.indexOf(target);
 	WindowList.splice(index, 1);
-	for (var i = 0; i < WindowList.length; i++) {
+	for (let i = 0; i < WindowList.length; i++) {
 		WindowList[i].zIndex = String(WindowZIndexOffset + i);
 	}
 }
@@ -542,15 +542,25 @@ function spliceWindowList(target)
     Drag or resize the window.
     If the event target is window border then resize the window.
 */
-var draggingWindow = null;
-var resizingWindow = false;
-var draggingWindowOffset = {x: 0, y: 0};
+let draggingWindow = null;
+let resizingWindow = false;
+let draggingWindowOffset = {x: 0, y: 0};
 function
 dragWindow(event)
 {
+	let Eventer = function Eventer (win) {
+		let style = window.getComputedStyle(win);
+		var dragEvent = new CustomEvent("windowdrag", {
+			detail: {
+				target: win,
+				position: {x: parseInt(style.left, 10), y: parseInt(style.top, 10)}
+			}
+		    });
+		win.dispatchEvent(dragEvent);
+	    };
 	// Get window object
-	var clientX = 0;
-	var clientY = 0;
+	let clientX = 0;
+	let clientY = 0;
 	if (event.type === "touchstart" || event.type === "touchmove" || event.type === "touchup") {
 		clientX = event.touches[0].clientX; // Use first touch event
 		clientY = event.touches[0].clientY;
@@ -558,7 +568,7 @@ dragWindow(event)
 		clientX = event.clientX;
 		clientY = event.clientY;
 	}
-	var win = null;
+	let win = null;
 	if (event.type === "mousedown" || event.type === "touchstart") {
 		// Raise selected window to frontmost
 		if (event.currentTarget.windowClassName === "classWindow") {
@@ -576,11 +586,12 @@ dragWindow(event)
 			return;
 		}
 		draggingWindow = win;
-		var rect = win.getBoundingClientRect();
+		let rect = win.getBoundingClientRect();
 		draggingWindowOffset.x = clientX - rect.left;
 		draggingWindowOffset.y = clientY - rect.top;
 		// Transparent
 		win.style.opacity = "0.8";
+		Eventer(win);
 		return;
 	} else if (draggingWindow === null || resizingWindow === null) {
 		return;
@@ -595,21 +606,21 @@ dragWindow(event)
 	//event.stopPropagation(); // Prevent to propagate the event to parent node
 	// Get mouse position
 	if (resizingWindow) { // Resize the window
-		var style = window.getComputedStyle(draggingWindow, "");
-		var rect = draggingWindow.getBoundingClientRect();
-		var x = clientX - rect.left -
+		let style = window.getComputedStyle(draggingWindow, "");
+		let rect = draggingWindow.getBoundingClientRect();
+		let x = clientX - rect.left -
 		    parseInt(style.borderLeftWidth, 10) - parseInt(style.borderRightWidth, 10) -
 		    parseInt(style.paddingRight, 10) - 7;
-		var y = clientY - rect.top -
+		let y = clientY - rect.top -
 		    parseInt(style.borderTopWidth, 10) - parseInt(style.borderBottomWidth, 10) -
 		    parseInt(style.paddingBottom, 10) - 7;
 		draggingWindow.style.width = String(x) + "px";
 		draggingWindow.style.height = String(y) + "px";
 	} else { // Drag the window
-		var parentNode = draggingWindow.parentNode;
-		var parentRect = parentNode.getBoundingClientRect();
-		var x = 0;
-		var y = 0;
+		let parentNode = draggingWindow.parentNode;
+		let parentRect = parentNode.getBoundingClientRect();
+		let x = 0;
+		let y = 0;
 		if (parentNode.nodeName === "BODY") {
 			// If the parent is BODY then the amount of scroll should be neglected
 			// because document.body.scrollTop == window.scrollY
@@ -623,27 +634,28 @@ dragWindow(event)
 		draggingWindow.style.left = String(x) + "px";
 		draggingWindow.style.top = String(y) + "px";
 	}
+	Eventer(draggingWindow);
 }
 
 function
 appendWindowScroller()
 {
-	var windowScroller = document.createElement("div");
+	let windowScroller = document.createElement("div");
 	windowScroller.className = "classWindowScroller";
 	windowScroller.id = "WindowScroller";
 	windowScroller.opening = false;
 	document.body.appendChild(windowScroller);
-	var raiseClickedTitle = function (event)
+	let raiseClickedTitle = function (event)
 	    {
 		    windowScroller.insertBefore(event.currentTarget, null);
-		    for (var i = 0; i < WindowList.length; i++) {
+		    for (let i = 0; i < WindowList.length; i++) {
 			    if (WindowList[i].windowTitle === event.currentTarget.innerHTML) {
 				    raiseWindowList(WindowList[i]);
 				    break;
 			    }
 		    }
 	    };
-	var openScroller = function ()
+	let openScroller = function ()
 	    {
 		    if (windowScroller.opening) {
 			    // Already opened
@@ -651,8 +663,8 @@ appendWindowScroller()
 		    }
 		    windowScroller.opening = true;
 		    windowScroller.style.width = "100px";
-		    for (var i = 0; i < WindowList.length; i++) {
-			    var box = document.createElement("div");
+		    for (let i = 0; i < WindowList.length; i++) {
+			    let box = document.createElement("div");
 			    box.className = "classWindowTitle";
 			    box.style.position = "relative";
 			    box.style.marginTop = "6px";
@@ -664,7 +676,7 @@ appendWindowScroller()
 			    windowScroller.appendChild(box);
 		    }
 	    };
-	var closeScroller = function ()
+	let closeScroller = function ()
 	    {
 		    if (windowScroller.opening) {
 			    windowScroller.style.width = "18px";
@@ -696,12 +708,12 @@ appendWindowScroller()
 function
 errorWindow(message)
 {
-	var errorWin = document.getElementById("errorWindow");
+	let errorWin = document.getElementById("errorWindow");
 	if (errorWin === null) {
 		errorWin = createWindow({id: "errorWindow", style: {position: "absolute", top: "30%", left: "30%", color: "rgb(255, 50, 50)", backgroundColor: "rgba(255, 0, 0, 0.8)"}});
 		document.body.appendChild(errorWin);
 	}
-	var content = document.querySelector("#errorWindow div.BlackBoard"); // get <div className="BlackBoard"> within a <tags id="errorWindow">
+	let content = document.querySelector("#errorWindow div.BlackBoard"); // get <div className="BlackBoard"> within a <tags id="errorWindow">
 	if (content === null) {
 		content = document.createElement("div");
 		errorWin.appendChild(content);
@@ -718,7 +730,7 @@ errorWindow(message)
 function
 initEncryptionToServer()
 {
-	var request = new XMLHttpRequest();
+	let request = new XMLHttpRequest();
 	request.open("POST", "cgi-bin/loadKey.cgi", true);
 	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	request.onreadystatechange = function () {
@@ -742,9 +754,9 @@ encrypt(text)
 	if (typeof text === "undefined" || text.length < 1) {
 		return "";
 	}
-	var text_encoded = encodeURIComponent(text);
-	var encrypted = "";
-	var i = 0;
+	let text_encoded = encodeURIComponent(text);
+	let encrypted = "";
+	let i = 0;
 	for (i = 0; i < Math.ceil(text_encoded.length / maxEncryptLength); i++) {
 		encrypted += cryptToServer.encrypt(text_encoded.slice(maxEncryptLength * i, Math.min(maxEncryptLength * (i + 1), text_encoded.length))) + "|";
 	}
@@ -758,9 +770,9 @@ decrypt(text)
 	if (typeof text === "undefined" || text.length < 1) {
 		return "";
 	}
-	var encrypted = text.split("|");
-	var decrypted = "";
-	var i = 0;
+	let encrypted = text.split("|");
+	let decrypted = "";
+	let i = 0;
 	for (i = 0; i < encrypted.length; i++) {
 		if (encrypted[i].length < 1) {
 			continue;
