@@ -72,6 +72,8 @@ class Fcel {
 		// Add initial cells
 		this.addCell();
 		this.addCell();
+		// Initial drawing
+		this.drawFcel();
 	}
 
 
