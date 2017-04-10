@@ -1,0 +1,234 @@
+html, body, div, span, pre, code, table, tbody, tr, th, td, form, input, textarea, label, select, canvas {
+	-webkit-appearance: none; /* Reset default style of iOS Safari. It may be deprecated. */
+	box-sizing: border-box;
+	margin: 0;
+	border: 0;
+	padding: 0;
+	font-size: 20px;
+	line-height: 1.1;
+	outline: 0;
+	vertical-align: baseline;
+	background: transparent;
+}
+html, body {
+	width: 100%;
+	height: 100%;
+}
+body {
+	background-color: rgb(0, 0, 0);
+	transition-property: background-color;
+	transition-duration: 16s;
+	transition-timing-function: linear;
+}
+span, form, label {
+	display: inline-block;
+}
+input, select {
+	vertical-align: middle;
+}
+
+textarea {
+	margin-left: 4px;
+	margin-right: 4px;
+	min-height: 24px;
+	padding: 4px;
+	font-size: 16px;
+	outline-style: solid;
+	outline-color: #A0A000;
+	outline-width: 1px;
+	background-color: #FFFFE0;
+}
+
+input[type="text"], input[type="password"] {
+	margin-left: 4px;
+	margin-right: 4px;
+	height: 24px;
+	padding: 4px;
+	font-size: 16px;
+	outline-style: solid;
+	outline-color: #A0A000;
+	outline-width: 1px;
+	background-color: #FFFFE0;
+}
+input[type="text"][disabled] {
+	color: #000000;
+	background-color: #CCCCB0;
+	cursor: default;
+}
+
+input[type="submit"] {
+	margin-top: -2px;
+	margin-left: 4px;
+	margin-right: 4px;
+	height: 24px;
+	border-style: ridge;
+	border-width: 3px;
+	border-color: #6060FF;
+	padding: 0px 2px;
+	font-size: 16px;
+	background-color: #E0FFFF;
+}
+
+input[type="button"] {
+	margin-top: -2px;
+	margin-left: 4px;
+	margin-right: 4px;
+	height: 24px;
+	border-style: ridge;
+	border-width: 3px;
+	border-color: #6060FF;
+	padding: 0px 2px;
+	font-size: 16px;
+	background-color: #E0FFFF;
+}
+input[type="button"]:active {
+	border-style: groove;
+	border-color: #2020B0;
+	background-color: #90B0B0;
+}
+
+input[type="radio"] {
+	display: none;
+}
+input[type="radio"] + label {
+	display: inline-block;
+	margin-left: 2px;
+	margin-right: 2px;
+	height: 24px;
+	border-style: ridge;
+	border-width: 3px;
+	border-color: rgba(32, 32, 32, 1.0);
+	border-radius: 6px;
+	padding: 0px 2px;
+	font-size: 16px;
+	color: #000000;
+	background-color: rgba(255, 255, 255, 1.0);
+}
+input[type="radio"]:checked + label {
+	border-style: groove;
+	border-color: #F0F0F0;
+	color: #F8F8F8;
+	background-color: rgba(0, 0, 0, 1.0);
+}
+
+input[type="checkbox"] {
+	display: none;
+}
+input[type="checkbox"] + label {
+	display: inline-block;
+	margin-left: 2px;
+	margin-right: 2px;
+	height: 24px;
+	border-style: ridge;
+	border-width: 3px;
+	border-color: #202020;
+	border-radius: 6px;
+	padding: 0px 2px;
+	font-size: 16px;
+	color: #000000;
+	background-color: #FFFFFF;
+}
+input[type="checkbox"]:checked + label {
+	border-style: groove;
+	border-color: #F0F0F0;
+	color: #F8F8F8;
+	background-color: #303030;
+}
+
+
+
+
+.classWindow {
+	box-sizing: content-box;
+	z-index: 10;
+	position: absolute;
+	top: 10%;
+	left: 10%;
+	min-height: 40px;
+	min-width: 100px;
+	border-style: solid;
+	border-width: 7px;
+	border-color: rgba(168, 0, 0, 0.8);
+	border-top-left-radius: 16px;
+	border-top-right-radius: 16px;
+	padding: 10px;
+	padding-bottom: 32px;
+	font-size: 20px;
+	color: rgb(240, 240, 240);
+	background-color: rgba(64, 32, 24, 0.5);
+	animation-name: popupOpacityVariance;
+	animation-duration: 0.3s;
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+	animation-direction: normal;
+}
+@keyframes popupOpacityVariance {
+	0% {opacity: 0.0;}
+	100% {opacity: 0.95;}
+}
+.classWindowTitle {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	height: 28px;
+	padding: 4px;
+	font-size: 20px;
+	font-weight: bold;
+	color: #800080;
+	background-color: rgba(255, 255, 240, 0.9);
+	cursor: default;
+}
+.classWindowResizer {
+	position: absolute;
+	bottom: -20px;
+	right: -20px;
+	height: 20px;
+	width: 20px;
+	border-style: solid;
+	border-bottom-width: 9px;
+	border-right-width: 9px;
+	border-color: rgba(255, 255, 255, 0.9);
+	background-color: rgba(255, 0, 0, 0.9);
+	outline-style: solid;
+	outline-width: 1px;
+	outline-color: rgba(0, 0, 0, 0.8);
+	cursor: pointer;
+}
+.classWindowScroller {
+	z-index: 9999;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	border-right-style: double;
+	border-right-width: 6px;
+	border-right-color: rgb(250, 5, 0);
+	height: 100%;
+	width: 10px;
+	min-width: 18px;
+	background-color: rgba(48, 0, 0, 0.8);
+	white-space: nowrap;
+	overflow: hidden;
+	transition-property: width;
+	transition-duration: 0.2s;
+	transition-timing-function: linear;
+}
+.classButton {
+	height: 28px;
+	border-style: solid;
+	border-width: 2px;
+	border-color: rgba(250, 250, 250, 0.9);
+	border-radius: 2px;
+	padding: 2px;
+	font-size: 20px;
+	color: rgba(240, 240, 240, 1.0);
+	background-color: rgba(0, 0, 0, 0.9);
+	cursor: pointer;
+}
+.classButton:active {
+	border-style: groove;
+	background-color: rgba(50, 50, 50, 0.7);
+}
+

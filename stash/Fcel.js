@@ -2,16 +2,13 @@
 "use strict";
 
 class Fcel {
-	constructor(rootWindow) {
+	constructor(windowSystemRoot, rootWindow) {
+		this.SysRoot = windowSystemRoot;
 		this.rootWindow = rootWindow;
 		this.rootWindowStyle = window.getComputedStyle(this.rootWindow);
 		this.timeClock = 0;
 
 		this.pool = null;
-		this.poolStyle = null;
-		this.poolWidthMax = 2048;
-		this.poolHeightMax = 2048;
-		this.sizePool = {width: 0, height: 0};
 		this.canvas = null;
 		this.context = null;
 		this.prev_clientX = 0;
@@ -84,8 +81,16 @@ class Fcel {
 	{
 		// Initialize canvas
 		this.canvas = document.createElement("canvas");
-		this.canvas.style.width = this.rootWindowStyle.width;
-		this.canvas.style.height = this.rootWindowStyle.height;
+		this.canvas.style.width = "100%";
+		this.canvas.style.height = "100%";
+		this.canvas.addEventListener(
+		    "windowdrag",
+		    function (e) {
+			    let style = window.getComputedStyle(e.currentTarget);
+			    e.currentTarget.width = parseInt(style.width, 10);
+			    e.currentTarget.height = parseInt(style.height, 10);
+		    },
+		    false);
 		this.canvas.id = "mainPool";
 		this.canvas.style.position = "absolute";
 		this.canvas.style.top = "0px";
@@ -97,6 +102,9 @@ class Fcel {
 		this.canvas.addEventListener("touchmove", function (e) { e.currentTarget.rootInstance.MouseMove(e); }, false);
 		this.context = this.canvas.getContext("2d");
 		this.rootWindow.appendChild(this.canvas);
+		let canvasStyle = window.getComputedStyle(this.canvas);
+		this.canvas.width = parseInt(canvasStyle.width, 10);
+		this.canvas.height = parseInt(canvasStyle.height, 10);
 	}
 
 	prepareFcelPool()
@@ -104,14 +112,11 @@ class Fcel {
 		// Initialize Fcel Pool
 		this.pool = document.createElement("div");
 		this.pool.id = "FcelPool";
-		this.pool.style.width = this.rootWindowStyle.width;
-		this.pool.style.height = this.rootWindowStyle.height;
+		this.pool.style.width = "100%";
+		this.pool.style.height = "100%";
 		this.pool.rootInstance = this;
 		this.pool.addEventListener("mousedown", function (e) { e.currentTarget.rootInstance.unselectCell(e); }, false);
 		this.rootWindow.appendChild(this.pool);
-		this.poolStyle = window.getComputedStyle(this.pool);
-		this.sizePool.width = parseInt(this.poolStyle.width, 10);
-		this.sizePool.height = parseInt(this.poolStyle.height, 10);
 	}
 
 	prepareButtons()
@@ -167,6 +172,7 @@ class Fcel {
 		this.toolsUpLayer.innerHTML = "&and;";
 		this.toolsUpLayer.id = "upFcelLayer";
 		this.toolsUpLayer.className = "FcelLayerSelectorControl";
+		this.toolsUpLayer.style.cursor = "pointer";
 		this.toolsUpLayer.rootInstance = this;
 		this.toolsUpLayer.addEventListener(
 		    "mousedown",
@@ -175,12 +181,14 @@ class Fcel {
 			    if (o.currentLayer < o.Layers.length - 1) {
 				    o.currentLayer++;
 			    }
+			    console.log("up");
 		    },
 		    false);
 		this.toolsDownLayer = document.createElement("div");
 		this.toolsDownLayer.id = "downFcelLayer";
 		this.toolsDownLayer.className = "FcelLayerSelectorControl";
 		this.toolsDownLayer.innerHTML = "&or;";
+		this.toolsDownLayer.style.cursor = "pointer";
 		this.toolsDownLayer.rootInstance = this;
 		this.toolsDownLayer.addEventListener(
 		    "mousedown",
@@ -189,6 +197,7 @@ class Fcel {
 			    if (o.currentLayer > 0) {
 				    o.currentLayer--;
 			    }
+			    console.log("down");
 		    },
 		    false);
 		this.toolsLayerSelector = document.createElement("div");
@@ -240,7 +249,7 @@ class Fcel {
 	addCell()
 	{
 		let style = window.getComputedStyle(this.rootWindow, "");
-		let cell = createDraggableElement("input");
+		let cell = this.SysRoot.createDraggableElement("input");
 		cell.id = "Fcel" + this.CellsID;
 		this.CellsID++;
 		cell.className = "Fcel";
@@ -256,7 +265,7 @@ class Fcel {
 		cell.addEventListener(
 		    "windowdrag",
 		    function (e) {
-			    let win = e.detail.target;
+			    let win = e.currentTarget;
 			    let root = win.rootInstance;
 			    win.absolutePosition.x = e.detail.position.x - root.viewPoint.x;
 			    win.absolutePosition.y = e.detail.position.y - root.viewPoint.y;
@@ -270,7 +279,7 @@ class Fcel {
 
 	deleteSelectedCell()
 	{
-		this.deletelCell(this.selected);
+		this.deleteCell(this.selected);
 		this.selected = null;
 	}
 
@@ -389,11 +398,11 @@ class Fcel {
 			// Remove the edge
 			cellTarget.edges.splice(cellTarget.edges.indexOf(edge), 1);
 			cellConnectTo.edges.splice(cellConnectTo.edges.indexOf(edge), 1);
-			this.Edges.splice(Edges.indexOf(edge), 1);
+			this.Edges.splice(this.Edges.indexOf(edge), 1);
 			return;
 		}
 		// Decide whether they are connectable or not
-		let find = findNode(cellTarget, cellConnectTo, layer);
+		let find = this.findNode(cellTarget, cellConnectTo, layer);
 		if (find == null) {
 			// Add edge
 			let newEdge = {layer: layer, direction: (direction > 0 ? 1 : direction < 0 ? -1 : 0), verticeA: cellTarget, verticeB: cellConnectTo};
@@ -409,7 +418,7 @@ class Fcel {
 
 	sumSelectedNetwork()
 	{
-		this.addCellSum(selected);
+		this.addCellSum(this.selected);
 	}
 
 	addCellSum(cell)
@@ -428,7 +437,7 @@ class Fcel {
 	{
 		let sumCells = document.getElementsByClassName("FcelSum");
 		for (let i = 0; i < sumCells.length; i++) {
-			let net = createNodeList(sumCells[i], sumCells[i].layer);
+			let net = this.createNodeList(sumCells[i], sumCells[i].layer);
 			if (net == null) {
 				continue;
 			}
@@ -500,15 +509,15 @@ class Fcel {
 	drawFcel()
 	{
 		let style = window.getComputedStyle(this.rootWindow, "");
-		let sx = window.scrollX - parseInt(style.left, 10);
-		let sy = window.scrollY - parseInt(style.top, 10);
+		let sx = Math.min(window.scrollX - parseInt(style.left, 10), 0);
+		let sy = Math.min(window.scrollY - parseInt(style.top, 10), 0);
 		let width = Math.min(window.innerWidth, parseInt(style.width, 10));
 		let height = Math.min(window.innerHeight, parseInt(style.height, 10));
 		// Refresh
 		this.context.clearRect(sx, sy, sx + width, sy + height);
 		// Background
 		this.context.fillStyle = negateColor("rgba(" + this.Colormap[this.currentLayer].red + "," + this.Colormap[this.currentLayer].green + "," + this.Colormap[this.currentLayer].blue + ",0.1)");
-		this.context.fillRect(sx, sy, sx + width, sy + height);
+		this.context.fillRect(sx, sy, width, height);
 		// Draw
 		this.drawFcelLines();
 		this.drawFcelSelected();
@@ -627,11 +636,4 @@ class Fcel {
 		}
 	}
 }
-
-
-
-
-// ---------- Instance ----------
-var FcelApplication = null;
-window.addEventListener("load", function () { FcelApplication = new Fcel(document.getElementById("FcelMainWindow")); }, false);
 
