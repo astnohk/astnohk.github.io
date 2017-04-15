@@ -83,6 +83,7 @@ class Fcel {
 	{
 		// Initialize canvas
 		this.canvas = document.createElement("canvas");
+		this.canvas.rootInstance = this;
 		this.canvas.style.width = "100%";
 		this.canvas.style.height = "100%";
 		this.canvas.addEventListener(
@@ -97,7 +98,6 @@ class Fcel {
 		this.canvas.style.position = "absolute";
 		this.canvas.style.top = "0px";
 		this.canvas.style.left = "0px";
-		this.canvas.rootInstance = this;
 		this.canvas.addEventListener("mousedown", function (e) { e.currentTarget.rootInstance.MouseClick(e); }, false);
 		this.canvas.addEventListener("mousemove", function (e) { e.currentTarget.rootInstance.MouseMove(e); }, false);
 		this.canvas.addEventListener("touchstart", function (e) { e.currentTarget.rootInstance.MouseClick(e); }, false);

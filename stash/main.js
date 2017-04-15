@@ -37,6 +37,10 @@ initSystem()
 var FcelApplication = null;
 window.addEventListener("load", function () { FcelApplication = new Fcel(SystemRoot, document.getElementById("FcelMainWindow")); }, false);
 
+// * Wave simulator
+var WaveSimulatorApplication = null;
+window.addEventListener("load", function () { WaveSimulatorApplication = new WaveSimulator(SystemRoot, document.getElementById("WaveSimulatorWindow")); }, false);
+
 
 
 
