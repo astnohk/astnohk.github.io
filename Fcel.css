@@ -35,7 +35,7 @@ input[type="text"].Fcel, input[type="password"].Fcel {
 	flex-wrap: nowrap;
 	position: absolute;
 	height: 40px;
-	width: 200px;
+	width: 80px;
 	margin: 0;
 	padding: 4px;
 	border-style: solid;
@@ -55,7 +55,7 @@ input[type="text"].FcelSum, input[type="password"].FcelSum {
 	flex-wrap: nowrap;
 	position: absolute;
 	height: 40px;
-	width: 200px;
+	width: 80px;
 	margin: 0;
 	padding: 4px;
 	border-style: solid;
