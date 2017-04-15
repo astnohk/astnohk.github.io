@@ -5,6 +5,7 @@ class WaveSimulator {
 	constructor(windowSystemRoot, rootWindow) {
 		this.SysRoot = windowSystemRoot;
 		this.rootWindow = rootWindow;
+		this.rootWindow.style.overflow = "hidden";
 		this.rootWindow.rootInstance = this;
 		this.rootWindowStyle = window.getComputedStyle(this.rootWindow);
 
@@ -76,12 +77,12 @@ class WaveSimulator {
 		this.prepareCanvas();
 		// Set event listener
 		this.rootWindow.addEventListener("keydown", function (e) { e.currentTarget.rootInstance.keyDown(e); }, false);
-		this.collapseButton = document.createElement("input");
+		this.collapseButton = document.createElement("div");
 		this.collapseButton.rootInstance = this;
 		this.collapseButton.innerHTML = "collapse";
 		this.collapseButton.id = "collapseButton";
-		this.collapseButton.addEventListener("mousedown", function (e) { e.currentTarget.rootInstance.collapseBoat(e); }, false);
-		this.collapseButton.addEventListener("touchstart", function (e) { e.currentTarget.rootInstance.collapseBoat(e); }, false);
+		this.collapseButton.addEventListener("mousedown", function (e) { e.preventDefault(); e.currentTarget.rootInstance.collapseBoat(e); }, false);
+		this.collapseButton.addEventListener("touchstart", function (e) { e.preventDefault(); e.currentTarget.rootInstance.collapseBoat(e); }, false);
 		this.rootWindow.appendChild(this.collapseButton);
 
 		// Adjust initial view rotation

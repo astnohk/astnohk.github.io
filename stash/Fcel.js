@@ -5,6 +5,7 @@ class Fcel {
 	constructor(windowSystemRoot, rootWindow) {
 		this.SysRoot = windowSystemRoot;
 		this.rootWindow = rootWindow;
+		this.rootWindow.style.overflow = "hidden";
 		this.rootWindowStyle = window.getComputedStyle(this.rootWindow);
 		this.timeClock = 0;
 
