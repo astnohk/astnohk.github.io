@@ -46,6 +46,16 @@ window.addEventListener("load", function () { WaveSimulatorApplication = new Wav
 
 // ----- REALTIME -----
 function
+brokenLightTitle()
+{
+	if (Math.random() > 0.85) {
+		document.getElementById("Title").style.opacity = "0.9";
+		setTimeout(function () { document.getElementById("Title").style.opacity = "1.0"; }, 10);
+	}
+}
+var LightingTitle = setInterval(brokenLightTitle, 200);
+
+function
 updateTimeAndBackground()
 {
 	time = new Date();
