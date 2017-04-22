@@ -4,11 +4,17 @@
 class ECMASystemWindow extends HTMLElement {
 	constructor() {
 		super();
+		// Basic elements
+		this.titleBox = null;
+		this.closeBox = null;
+		this.resizer = null;
+		// System variables
 		this.ECMASystemRoot = null;
+		this.ECMASystemMyself = this;
+		this.ECMASystemParentWindow = null;
 		this.ECMASystemWindowID = null;
 		this.ECMASystemWindowClass = "classWindow";
-		this.ECMASystemWindowTitle = null;
-		this.ECMASystemParentWindow = null;
+		this.ECMASystemWindowTitle = "Undefined";
 		// state
 		this.ECMASystemWindowFixed = false;
 		this.ECMASystemStateLock = false;
@@ -20,12 +26,7 @@ class ECMASystemWindow extends HTMLElement {
 		this.ECMASystemCloseFunctionUserDefined = function () {};
 		this.ECMASystemCloseWindow = function ()
 		    {
-			    let win = null;
-			    if (this.ECMASystemWindowClass === "classWindow") {
-				    win = this;
-			    } else if (this.ECMASystemWindowClass === "classCloseButton") {
-				    win = this.ECMASystemParentWindow;
-			    }
+			    let win = this.ECMASystemMyself;
 			    if (win.parentNode === null ||// The Node has been created but not added to DOM tree
 				win.ECMASystemStateLock) {
 				    return;
@@ -43,6 +44,28 @@ class ECMASystemWindow extends HTMLElement {
 				},
 				win.ECMASystemCloseWindowTimeDuration);
 		    };
+	}
+
+	fixWindow()
+	{
+		this.ECMASystemWindowFixed = true;
+		if (win.closeBox != null) {
+			win.closeBox.style.display = "none";
+		}
+		if (win.resizer != null) {
+			win.resizer.style.display = "none";
+		}
+	}
+
+	unfixWindow()
+	{
+		this.ECMASystemWindowFixed = false;
+		if (win.closeBox != null) {
+			win.closeBox.style.display = "inline-block";
+		}
+		if (win.resizer != null) {
+			win.resizer.style.display = "inline-block";
+		}
 	}
 }
 customElements.define("ecmasystem-window", ECMASystemWindow);
@@ -87,15 +110,27 @@ class ECMASystem {
 	}
 
 	// ----- GLOBAL CLICK EVENTS -----
+	/*
+	    Do NOT call directly from such as event listener.
+	    It will produce bugs e.g. "Cannot read property..."
+	*/
 	globalClickEvent(event)
 	{
 	}
 
+	/*
+	    Do NOT call directly from such as event listener.
+	    It will produce bugs e.g. "Cannot read property..."
+	*/
 	globalMouseMoveEvent(event)
 	{
 		this.dragWindow(event);
 	}
 
+	/*
+	    Do NOT call directly from such as event listener.
+	    It will produce bugs e.g. "Cannot read property..."
+	*/
 	globalMouseUpEvent(event)
 	{
 		this.dragWindow(event);
@@ -107,25 +142,28 @@ class ECMASystem {
 		if (this.windowScroller != null) {
 			return;
 		}
-		this.windowScroller = document.createElement("div");
+		//this.windowScroller = document.createElement("div");
+		this.windowScroller = new ECMASystemWindow();
 		this.windowScroller.ECMASystemRoot = this;
 		let className = "classWindowScroller";
 		this.windowScroller.className = className;
 		this.windowScroller.ECMASystemWindowClass = className;
-		this.windowScroller.ECMASystemStateLock = false;
+		//this.windowScroller.ECMASystemStateLock = false;
+		this.windowScroller.ECMASystemWindowFixed = true;
 		this.windowScroller.id = "WindowScroller";
 		document.body.appendChild(this.windowScroller);
 		this.windowScroller.openScroller = function ()
 		    {
+			    let root = this.ECMASystemRoot;
 			    if (this.ECMASystemStateLock) {
 				    // Already opened
 				    return;
 			    }
 			    this.ECMASystemStateLock = true;
 			    this.style.width = "100px"; // Open
-			    for (let i = 0; i < this.ECMASystemRoot.WindowList.length; i++) {
+			    for (let i = 0; i < root.WindowList.length; i++) {
 				    let box = document.createElement("div");
-				    box.ECMASystemRoot = this.ECMASystemRoot;
+				    box.ECMASystemRoot = root;
 				    let boxClassName = "classWindowTitle";
 				    box.className = boxClassName;
 				    box.ECMASystemWindowClass = boxClassName;
@@ -134,9 +172,9 @@ class ECMASystem {
 				    box.style.transitionProperty = "top";
 				    box.style.transitionDuration = "0.2s";
 				    box.style.transitionTimingFunction = "linear";
-				    box.innerHTML = this.ECMASystemRoot.WindowList[i].windowTitle;
+				    box.innerHTML = root.WindowList[i].ECMASystemWindowTitle;
 				    box.addEventListener("click", function (e) { e.currentTarget.ECMASystemRoot.raiseClickedTitle(e); }, false);
-				    this.windowScroller.appendChild(box);
+				    root.windowScroller.appendChild(box);
 			    }
 		    };
 		this.windowScroller.closeScroller = function ()
@@ -154,19 +192,24 @@ class ECMASystem {
 		this.windowScroller.addEventListener(
 		    "wheel",
 		    function (event) {
+			    let root = event.currentTarget.ECMASystemRoot;
 			    if (event.deltaY > 0) {
-				    this.raiseWindowList(this.WindowList[0]);
-				    this.windowScroller.insertBefore(this.windowScroller.children[0], null);
+				    root.raiseWindowList(root.WindowList[0]);
+				    root.windowScroller.insertBefore(root.windowScroller.children[0], null);
 			    } else {
-				    this.windowScroller.insertBefore(
-					this.windowScroller.children[this.windowScroller.children.length - 1],
-					this.windowScroller.children[0]);
-				    this.lowerWindowList(this.WindowList[this.WindowList.length - 1]);
+				    root.windowScroller.insertBefore(
+					root.windowScroller.children[root.windowScroller.children.length - 1],
+					root.windowScroller.children[0]);
+				    root.lowerWindowList(root.WindowList[root.WindowList.length - 1]);
 			    }
 		    },
 		    false);
 	}
 
+	/*
+	    Do NOT call directly from such as event listener.
+	    It will produce bugs e.g. "Cannot read property..."
+	*/
 	raiseClickedTitle(event)
 	{
 		this.windowScroller.insertBefore(event.currentTarget, null);
@@ -203,6 +246,7 @@ class ECMASystem {
 			win.style.left = String(40 + Math.min(this.WindowList.length * 10, 200)) + "px";
 		}
 		win.ECMASystemRoot = this;
+		win.ECMASystemMyself = win;
 		win.ECMASystemWindowClass = className;
 		win.ECMASystemStateLock = true;
 		win.ECMASystemParentWindow = this.rootWindow;
@@ -227,19 +271,22 @@ class ECMASystem {
 				Object.assign(win.style, parameter.style);
 			}
 			// Title
-			if ("title" in parameter && win.ECMASystemWindowClass === "classDialog") {
+			if ("title" in parameter) {
 				// Add title
-				let title = document.createElement("span");
-				title.ECMASystemRoot = this;
-				title.ECMASystemWindowClass = classNameTitle;
-				title.ECMASystemParentWindow = win;
+				win.titleBox = document.createElement("span");
+				win.titleBox.ECMASystemRoot = this;
+				win.titleBox.ECMASystemMyself = win;
+				win.titleBox.ECMASystemParentWindow = win;
 				let classNameTitle = "classWindowTitle";
-				title.className = classNameTitle;
-				title.innerHTML = parameter.title;
-				title.addEventListener("mousedown", function (e) { e.currentTarget.ECMASystemRoot.dragWindow(e); }, false);
-				title.addEventListener("touchstart", function (e) { e.currentTarget.ECMASystemRoot.dragWindow(e); }, false);
-				win.appendChild(title);
+				win.titleBox.ECMASystemWindowClass = classNameTitle;
+				win.titleBox.className = classNameTitle;
+				win.titleBox.innerHTML = parameter.title;
+				//win.titleBox.addEventListener("mousedown", function (e) { e.currentTarget.ECMASystemRoot.dragWindow(e); }, false);
+				//win.titleBox.addEventListener("touchstart", function (e) { e.currentTarget.ECMASystemRoot.dragWindow(e); }, false);
+				win.appendChild(win.titleBox);
 				win.ECMASystemWindowTitle = parameter.title;
+			} else if (win.ECMASystemWindowClass === "classDialog") {
+				win.ECMASystemWindowTitle = "dialog";
 			}
 		}
 		// Add window close function to HTML Element
@@ -248,17 +295,18 @@ class ECMASystem {
 		}
 		if (!(parameterDefined && "noCloseButton" in parameter)) {
 			// Append Close button
-			let closeBox = this.makeFunctionButton(
+			win.closeBox = this.makeFunctionButton(
 			    "classButton",
 			    "&times;",
 			    win.ECMASystemCloseWindow);
-			closeBox.ECMASystemRoot = this;
-			closeBox.ECMASystemWindowClass = "classCloseButton";
-			closeBox.ECMASystemParentWindow = win;
-			closeBox.style.position = "absolute";
-			closeBox.style.right = "30px";
-			closeBox.style.bottom = "0px";
-			win.appendChild(closeBox);
+			win.closeBox.ECMASystemRoot = this;
+			win.closeBox.ECMASystemMyself = win;
+			win.closeBox.ECMASystemWindowClass = "classCloseButton";
+			win.closeBox.ECMASystemParentWindow = win;
+			win.closeBox.style.position = "absolute";
+			win.closeBox.style.right = "30px";
+			win.closeBox.style.bottom = "0px";
+			win.appendChild(win.closeBox);
 		}
 		win.addEventListener(
 		    "mousedown",
@@ -284,13 +332,14 @@ class ECMASystem {
 		}
 		this.WindowList.push(win);
 		// Add slider for resizing
-		let resizer = document.createElement("div");
-		resizer.ECMASystemRoot = this;
+		win.resizer = document.createElement("div");
+		win.resizer.ECMASystemRoot = this;
+		win.resizer.ECMASystemMyself = win;
 		let resizerClassName = "classWindowResizer";
-		resizer.className = resizerClassName;
-		resizer.ECMASystemWindowClass = resizerClassName;
-		resizer.ECMASystemParentWindow = win;
-		win.appendChild(resizer);
+		win.resizer.className = resizerClassName;
+		win.resizer.ECMASystemWindowClass = resizerClassName;
+		win.resizer.ECMASystemParentWindow = win;
+		win.appendChild(win.resizer);
 		// Finish opening process
 		win.ECMASystemStateLock = false;
 		return win;
@@ -300,6 +349,7 @@ class ECMASystem {
 	{
 		let element = document.createElement(elementName);
 		element.ECMASystemRoot = this;
+		element.ECMASystemMyself = element;
 		element.ECMASystemParentWindow = this.rootWindow;
 		element.ECMASystemWindowClass = "classDraggableElement";
 		element.ECMASystemEventState = "";
@@ -346,6 +396,9 @@ class ECMASystem {
 	/*
 	    Drag or resize the window.
 	    If the event target is window border then resize the window.
+
+	    Do NOT call directly from such as event listener.
+	    It will produce bugs e.g. "Cannot read property..."
 	*/
 	dragWindow(event)
 	{
@@ -375,11 +428,11 @@ class ECMASystem {
 			this.raiseWindowList(event.currentTarget);
 			if (event.target.ECMASystemWindowClass === "classWindow" || event.target.ECMASystemWindowClass === "classDraggableElement" ||
 			    event.target.ECMASystemWindowClass === "classWindowTitle") {
-				win = event.currentTarget;
+				win = event.target.ECMASystemMyself;
 				this.draggingWindows.push(win);
 				win.ECMASystemEventState = "drag";
 			} else if (event.target.ECMASystemWindowClass === "classWindowResizer") {
-				win = event.target.ECMASystemParentWindow;
+				win = event.target.ECMASystemMyself;
 				this.draggingWindows.push(win);
 				win.ECMASystemEventState = "resize";
 			} else {
@@ -476,16 +529,10 @@ class ECMASystem {
 
 	errorWindow(message)
 	{
-		let errorWin = document.getElementById("errorWindow");
-		if (errorWin === null) {
-			errorWin = createWindow({id: "errorWindow", style: {position: "absolute", top: "30%", left: "30%", color: "rgb(255, 50, 50)", backgroundColor: "rgba(255, 0, 0, 0.8)"}});
-			document.body.appendChild(errorWin);
-		}
-		let content = document.querySelector("#errorWindow div.BlackBoard"); // get <div className="BlackBoard"> within a <tags id="errorWindow">
-		if (content === null) {
-			content = document.createElement("div");
-			errorWin.appendChild(content);
-		}
+		let errorWin = createWindow({id: "errorWindow", style: {position: "absolute", top: "30%", left: "30%", color: "rgb(255, 50, 50)", backgroundColor: "rgba(255, 0, 0, 0.8)"}});
+		document.body.appendChild(errorWin);
+		let content = document.createElement("div");
+		errorWin.appendChild(content);
 		content.className = "BlackBoard";
 		content.innerHTML = message;
 	}
@@ -556,9 +603,6 @@ negateColor(color)
 	}
 	return output;
 }
-
-
-
 
 
 
