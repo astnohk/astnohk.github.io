@@ -267,17 +267,6 @@ td.tableCalendar {
 	border-width: 5px;
 	border-color: rgba(240, 240, 240, 0.5);
 }
-.BlackBoard {
-	position: relative;
-	padding: 5px;
-	border-style: solid;
-	border-width: 2px;
-	border-color: rgba(80, 80, 80, 0.9);
-	border-radius: 2px;
-	font-size: 20px;
-	color: #F0F0F0;
-	background-color: rgba(0, 0, 0, 0.9);
-}
 
 #Readme {
 	position: absolute;

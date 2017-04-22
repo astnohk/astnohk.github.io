@@ -6,10 +6,11 @@ class ECMASystemWindow extends HTMLElement {
 		super();
 		this.ECMASystemRoot = null;
 		this.ECMASystemWindowID = null;
-		this.ECMASystemWindowClass = null;
+		this.ECMASystemWindowClass = "classWindow";
 		this.ECMASystemWindowTitle = null;
 		this.ECMASystemParentWindow = null;
 		// state
+		this.ECMASystemWindowFixed = false;
 		this.ECMASystemStateLock = false;
 		this.ECMASystemCloseWindowTimeDuration = 300;
 		this.ECMASystemDragEventType = "";
@@ -249,7 +250,7 @@ class ECMASystem {
 			// Append Close button
 			let closeBox = this.makeFunctionButton(
 			    "classButton",
-			    "Close",
+			    "&times;",
 			    win.ECMASystemCloseWindow);
 			closeBox.ECMASystemRoot = this;
 			closeBox.ECMASystemWindowClass = "classCloseButton";
@@ -259,8 +260,22 @@ class ECMASystem {
 			closeBox.style.bottom = "0px";
 			win.appendChild(closeBox);
 		}
-		win.addEventListener("mousedown", function (e) { e.currentTarget.ECMASystemRoot.dragWindow(e); }, false);
-		win.addEventListener("touchstart", function (e) { e.currentTarget.ECMASystemRoot.dragWindow(e); }, false);
+		win.addEventListener(
+		    "mousedown",
+		    function (e) {
+			    if (e.currentTarget.ECMASystemWindowFixed == false) {
+				    e.currentTarget.ECMASystemRoot.dragWindow(e);
+			    }
+		    },
+		    false);
+		win.addEventListener(
+		    "touchstart",
+		    function (e) {
+			    if (e.currentTarget.ECMASystemWindowFixed == false) {
+				    e.currentTarget.ECMASystemRoot.dragWindow(e);
+			    }
+		    },
+		    false);
 		// Add new window to WindowList
 		if (this.WindowList.length > 0) {
 			win.style.zIndex = String(parseInt(this.WindowList[this.WindowList.length - 1].style.zIndex, 10) + 1);
@@ -486,7 +501,7 @@ parseUnicodeInt(str, base)
 	if (typeof base === "undefined") {
 		let base = 10;
 	}
-	if (str.search(/[０-９]/) >= 0) {
+	if (str.search(/[０１２３４５６７８９]/) >= 0) {
 		let list = ["０", "１", "２", "３", "４", "５", "６", "７", "８", "９"];
 		for (let i = 0; i < 10; i++) {
 			let regex = new RegExp(list[i], "g");

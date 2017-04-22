@@ -139,6 +139,8 @@ openChangeBackground()
 	document.body.appendChild(win);
 	let board = document.createElement("div");
 	board.className = "BlackBoard";
+	board.style.width = "100%";
+	board.style.height = "100%";
 	win.appendChild(board);
 	let box_main = document.createElement("div");
 	box_main.className = "upperBox";
