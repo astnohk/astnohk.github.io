@@ -2,3 +2,14 @@
 	opacity: 1.0;
 }
 
+.Contents {
+	outline-style: solid;
+	outline-width: 2px;
+	outline-color: rgba(255, 255, 255, 0.8);
+	padding: 10px;
+	height: 800px;
+	width: 800px;
+	transform: scale(0.5, 0.5);
+	transform-origin: 0 0 0;
+}
+

@@ -49,22 +49,22 @@ class ECMASystemWindow extends HTMLElement {
 	fixWindow()
 	{
 		this.ECMASystemWindowFixed = true;
-		if (win.closeBox != null) {
-			win.closeBox.style.display = "none";
+		if (this.closeBox != null) {
+			this.closeBox.style.display = "none";
 		}
-		if (win.resizer != null) {
-			win.resizer.style.display = "none";
+		if (this.resizer != null) {
+			this.resizer.style.display = "none";
 		}
 	}
 
 	unfixWindow()
 	{
 		this.ECMASystemWindowFixed = false;
-		if (win.closeBox != null) {
-			win.closeBox.style.display = "inline-block";
+		if (this.closeBox != null) {
+			this.closeBox.style.display = "inline-block";
 		}
-		if (win.resizer != null) {
-			win.resizer.style.display = "inline-block";
+		if (this.resizer != null) {
+			this.resizer.style.display = "inline-block";
 		}
 	}
 }
@@ -235,18 +235,32 @@ class ECMASystem {
 		return box;
 	}
 
-	createWindow(parameter, win = null)
+	/*
+	    parameter: object of initialize parameters
+		id		: [String] Set ID for HTML element
+		className	: [String] Set className of HTML element of the window (do NOT affect ECMASystemWindowClass)
+		style		: [Object] Set styles to the window. It should be object of styles
+		title		: [String] Set the window title
+		closeFunction	: [Function] Set the user close function which will execute before the window close function
+		noCloseButton	: [null] If this is in parameter then do NOT create a close button on the window
+	*/
+	createWindow(parameter)
 	{
 		let className = "classWindow";
-		if (win == null) {
-			win = new ECMASystemWindow();
-			win.className = className;
-			// Set position along with the number of windows
-			win.style.top = String(100 + Math.min(this.WindowList.length * 10, 200)) + "px";
-			win.style.left = String(40 + Math.min(this.WindowList.length * 10, 200)) + "px";
-		}
+		let win = new ECMASystemWindow();
+		// Set position along with the number of windows
+		win.style.zIndex = "10";
+		win.style.position = "absolute";
+		win.style.top = String(100 + Math.min(this.WindowList.length * 10, 200)) + "px";
+		win.style.left = String(40 + Math.min(this.WindowList.length * 10, 200)) + "px";
+		win.style.boxSizing = "content-box";
+		win.style.minHeight = "0px";
+		win.style.minWidth = "40px";
+		win.style.padding = "10px";
+		win.style.paddingBottom = "32px";
 		win.ECMASystemRoot = this;
 		win.ECMASystemMyself = win;
+		win.className = className;
 		win.ECMASystemWindowClass = className;
 		win.ECMASystemStateLock = true;
 		win.ECMASystemParentWindow = this.rootWindow;
@@ -266,6 +280,10 @@ class ECMASystem {
 			if ("id" in parameter) {
 				win.id = parameter.id;
 			}
+			// Class
+			if ("className" in parameter) {
+				win.className = parameter.className;
+			}
 			// Style
 			if ("style" in parameter) {
 				Object.assign(win.style, parameter.style);
@@ -281,8 +299,6 @@ class ECMASystem {
 				win.titleBox.ECMASystemWindowClass = classNameTitle;
 				win.titleBox.className = classNameTitle;
 				win.titleBox.innerHTML = parameter.title;
-				//win.titleBox.addEventListener("mousedown", function (e) { e.currentTarget.ECMASystemRoot.dragWindow(e); }, false);
-				//win.titleBox.addEventListener("touchstart", function (e) { e.currentTarget.ECMASystemRoot.dragWindow(e); }, false);
 				win.appendChild(win.titleBox);
 				win.ECMASystemWindowTitle = parameter.title;
 			} else if (win.ECMASystemWindowClass === "classDialog") {
@@ -455,6 +471,10 @@ class ECMASystem {
 			return;
 		} else if (event.type === "mouseup" || event.type === "touchend") {
 			win = this.findWindowByEvent(this.draggingWindows, event);
+			if (win == null) {
+				this.draggingWindows = new Array(); // Clean
+				return;
+			}
 			let targetIndex = this.draggingWindows.indexOf(win);
 			win = this.draggingWindows[targetIndex];
 			win.style.opacity = "1.0";
@@ -470,6 +490,11 @@ class ECMASystem {
 		//event.stopPropagation(); // Prevent to propagate the event to parent node
 
 		win = this.findWindowByEvent(this.draggingWindows, event);
+		if (win == null) {
+			// There are NOT any dragging window in current mouse or touch event
+			this.draggingWindows = new Array(); // Clean
+			return;
+		}
 		// Get mouse position
 		if (win.ECMASystemEventState === "resize") { // Resize the window
 			let style = window.getComputedStyle(win, "");

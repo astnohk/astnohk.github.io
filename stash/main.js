@@ -1,7 +1,6 @@
 // Initialize window system
 window.addEventListener("load", initSystem, false);
 
-var SystemRoot;
 // User ID
 var userId = "you";
 var onetimepass = "";
@@ -26,20 +25,33 @@ var listBackground = {
 
 
 // ----- Initialize -----
-// * ECMASystem
+var SystemRoot;
+var FcelMainWindow;
+var FcelApplication;
+var WaveSimulatorWindow;
+var WaveSimulatorApplication;
+
 function
 initSystem()
 {
+	// * ECMASystem
 	SystemRoot = new ECMASystem(document.body);
+
+	// * Fcel
+	FcelMainWindow = SystemRoot.createWindow({id: "FcelMainWindow", className: "Contents", noCloseButton: null});
+	FcelMainWindow.style.top = "0px";
+	FcelMainWindow.style.left = "0px";
+	document.getElementById("Menu").appendChild(FcelMainWindow);
+	FcelApplication = new Fcel(SystemRoot, document.getElementById("FcelMainWindow"));
+
+	// * Wave simulator
+	var WaveSimulatorWindow = SystemRoot.createWindow({id: "WaveSimulatorWindow", className: "Contents", noCloseButton: null});
+	WaveSimulatorWindow.style.top = "0px";
+	WaveSimulatorWindow.style.left = "430px";
+	document.getElementById("Menu").appendChild(WaveSimulatorWindow);
+	WaveSimulatorApplication = new WaveSimulator(SystemRoot, document.getElementById("WaveSimulatorWindow"));
 }
 
-// * Fcel
-var FcelApplication = null;
-window.addEventListener("load", function () { FcelApplication = new Fcel(SystemRoot, document.getElementById("FcelMainWindow")); }, false);
-
-// * Wave simulator
-var WaveSimulatorApplication = null;
-window.addEventListener("load", function () { WaveSimulatorApplication = new WaveSimulator(SystemRoot, document.getElementById("WaveSimulatorWindow")); }, false);
 
 
 
