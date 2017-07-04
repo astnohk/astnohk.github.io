@@ -10,3 +10,6 @@
 [submodule "lib/ECMAOS7"]
 	path = lib/ECMAOS7
 	url = https://github.com/astnohk/ECMAOS7.git
+[submodule "lib/Fcel"]
+	path = lib/Fcel
+	url = https://github.com/astnohk/Fcel.git
