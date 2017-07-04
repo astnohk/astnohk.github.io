@@ -13,3 +13,6 @@
 [submodule "lib/Fcel"]
 	path = lib/Fcel
 	url = https://github.com/astnohk/Fcel.git
+[submodule "lib/ECMASystem7"]
+	path = lib/ECMASystem7
+	url = https://github.com/astnohk/ECMASystem7.git
