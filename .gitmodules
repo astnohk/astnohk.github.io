@@ -2,8 +2,11 @@
 	path = ECMASystem7
 	url = https://github.com/astnohk/ECMASystem7.git
 [submodule "Fcel"]
-	path = Fcel
+	path = lib/Fcel
 	url = https://github.com/astnohk/Fcel.git
 [submodule "Wave_simulator_ECMA"]
-	path = Wave_simulator_ECMA
+	path = lib/Wave_simulator_ECMA
 	url = https://github.com/astnohk/Wave_simulator_ECMA.git
+[submodule "lib/ECMAOS7"]
+	path = lib/ECMAOS7
+	url = https://github.com/astnohk/ECMAOS7.git
