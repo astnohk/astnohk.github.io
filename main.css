@@ -3,6 +3,7 @@
 }
 
 .Contents {
+	display: flex;
 	outline-style: solid;
 	outline-width: 2px;
 	outline-color: rgba(255, 255, 255, 0.8);
@@ -11,5 +12,8 @@
 	width: 800px;
 	transform: scale(0.5, 0.5);
 	transform-origin: 0 0 0;
+	transition-property: transform, margin;
+	transition-duration: 0.5s;
+	transition-timing-function: linear;
 }
 

@@ -21,6 +21,8 @@ var listBackground = {
     blue: {name: "Blue", color: "rgb(0, 0, 128)"},
     black: {name: "Black", color: "rgb(0, 0, 0)"}};
 
+var MenuScaling = 0.25;
+
 
 
 
@@ -34,22 +36,60 @@ var WaveSimulatorApplication;
 function
 initSystem()
 {
+	var Menu = document.getElementById("Menu");
+
 	// * ECMASystem
 	SystemRoot = new ECMASystem(document.body);
 
 	// * Fcel
 	FcelMainWindow = SystemRoot.createWindow({id: "FcelMainWindow", className: "Contents", noCloseButton: null});
+	FcelMainWindow.style.position = "relative";
 	FcelMainWindow.style.top = "0px";
-	FcelMainWindow.style.left = "0px";
-	document.getElementById("Menu").appendChild(FcelMainWindow);
+	FcelMainWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
+	Menu.appendChild(FcelMainWindow);
 	FcelApplication = new Fcel(SystemRoot, document.getElementById("FcelMainWindow"));
 
 	// * Wave simulator
 	var WaveSimulatorWindow = SystemRoot.createWindow({id: "WaveSimulatorWindow", className: "Contents", noCloseButton: null});
+	WaveSimulatorWindow.style.position = "relative";
 	WaveSimulatorWindow.style.top = "0px";
-	WaveSimulatorWindow.style.left = "430px";
-	document.getElementById("Menu").appendChild(WaveSimulatorWindow);
+	WaveSimulatorWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
+	Menu.appendChild(WaveSimulatorWindow);
 	WaveSimulatorApplication = new WaveSimulator(SystemRoot, document.getElementById("WaveSimulatorWindow"));
+
+	// * Menu Scaling
+	var MenuScalingFunction = function (e) {
+		let MenuChildren = Array.from(Menu.children);
+		let target = null;
+		if (typeof e !== "undefined") {
+			target = e.target;
+			while (target != e.currentTarget) {
+				if (MenuChildren.indexOf(target) >= 0) {
+					break;
+				}
+				target = target.parentNode;
+			}
+		}
+		if (target == Menu) {
+			return;
+		}
+		for (let i = 0; i < MenuChildren.length; i++) {
+			if (MenuChildren[i] != target) {
+				let style = window.getComputedStyle(MenuChildren[i]);
+				MenuChildren[i].style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
+				MenuChildren[i].style.marginRight = -parseInt(style.width, 10) * (1.0 - MenuScaling) + "px";
+				MenuChildren[i].style.marginBottom = -parseInt(style.height, 10) * (1.0 - MenuScaling) + "px";
+			}
+		}
+		if (target !== null) {
+			target.style.transform = "scale(1.0, 1.0)";
+			target.style.marginRight = "0";
+			target.style.marginBottom = "0";
+		}
+	    };
+	MenuScalingFunction(); // Initialize
+	Menu.addEventListener("mousedown", MenuScalingFunction, false);
+	Menu.addEventListener("touchstart", MenuScalingFunction, false);
 }
 
 
