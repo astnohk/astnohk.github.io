@@ -47,7 +47,7 @@ initSystem()
 	FcelMainWindow.style.top = "0px";
 	FcelMainWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
 	Menu.appendChild(FcelMainWindow);
-	FcelApplication = new Fcel(SystemRoot, document.getElementById("FcelMainWindow"));
+	FcelApplication = new Fcel(SystemRoot, FcelMainWindow);
 
 	// * Wave simulator
 	var WaveSimulatorWindow = SystemRoot.createWindow({id: "WaveSimulatorWindow", className: "Contents", noCloseButton: null});
@@ -55,7 +55,7 @@ initSystem()
 	WaveSimulatorWindow.style.top = "0px";
 	WaveSimulatorWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
 	Menu.appendChild(WaveSimulatorWindow);
-	WaveSimulatorApplication = new WaveSimulator(SystemRoot, document.getElementById("WaveSimulatorWindow"));
+	WaveSimulatorApplication = new WaveSimulator(SystemRoot, WaveSimulatorWindow);
 
 	// * Menu Scaling
 	var MenuScalingFunction = function (e) {
