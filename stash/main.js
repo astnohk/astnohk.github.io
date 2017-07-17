@@ -63,15 +63,12 @@ initSystem()
 		let target = null;
 		if (typeof e !== "undefined") {
 			target = e.target;
-			while (target != e.currentTarget) {
+			while (target != null) {
 				if (MenuChildren.indexOf(target) >= 0) {
 					break;
 				}
 				target = target.parentNode;
 			}
-		}
-		if (target == Menu) {
-			return;
 		}
 		for (let i = 0; i < MenuChildren.length; i++) {
 			if (MenuChildren[i] != target) {
