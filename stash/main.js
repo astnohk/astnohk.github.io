@@ -4,10 +4,13 @@ window.addEventListener("load", initSystem, false);
 // User ID
 var userId = "you";
 var onetimepass = "";
-var time;
 
 // Settings
 var UserSettings = {BackgroundColor: "black"};
+
+// Time
+var time;
+var timeClock = setInterval(updateTimeAndBackground, 1000);
 
 // Background color list
 var listBackground = {
@@ -102,6 +105,36 @@ updateTimeAndBackground()
 	changeBackgroundColor();
 }
 
+function
+changeBackgroundColor()
+{
+	// Set background color
+	if (UserSettings.BackgroundColor === "change") {
+		if (time.getMonth() <= 3 || 10 <= time.getMonth()) {
+			if (time.getHours() < 6 || 18 <= time.getHours()) {
+				document.body.style.background = "rgba(10, 10, 0, 1.0)";
+			} else if (time.getHours() < 7 || 17 <= time.getHours()) {
+				document.body.style.background = "rgba(247, 207, 110, 1.0)";
+			} else if (time.getHours() < 8 || 16 <= time.getHours()) {
+				document.body.style.background = "rgba(110, 230, 233, 1.0)";
+			} else {
+				document.body.style.background = "rgba(93, 198, 255, 1.0)";
+			}
+		} else {
+			if (time.getHours() < 4 || 19 <= time.getHours()) {
+				document.body.style.background = "rgba(10, 10, 0, 1.0)";
+			} else if (time.getHours() < 5 || 18 <= time.getHours()) {
+				document.body.style.background = "rgba(247, 207, 110, 1.0)";
+			} else if (time.getHours() < 6 || 17 <= time.getHours()) {
+				document.body.style.background = "rgba(110, 230, 233, 1.0)";
+			} else {
+				document.body.style.background = "rgba(93, 198, 255, 1.0)";
+			}
+		}
+	} else {
+		document.body.style.background = listBackground[UserSettings.BackgroundColor].color;
+	}
+}
 
 
 // Check member checkboxes
@@ -245,37 +278,6 @@ openChangeBackground()
 	    },
 	    false);
 	box_button.appendChild(save);
-}
-
-function
-changeBackgroundColor()
-{
-	// Set background color
-	if (UserSettings.BackgroundColor === "change") {
-		if (time.getMonth() <= 3 || 10 <= time.getMonth()) {
-			if (time.getHours() < 6 || 18 <= time.getHours()) {
-				document.body.style.background = "rgba(10, 10, 0, 1.0)";
-			} else if (time.getHours() < 7 || 17 <= time.getHours()) {
-				document.body.style.background = "rgba(247, 207, 110, 1.0)";
-			} else if (time.getHours() < 8 || 16 <= time.getHours()) {
-				document.body.style.background = "rgba(110, 230, 233, 1.0)";
-			} else {
-				document.body.style.background = "rgba(93, 198, 255, 1.0)";
-			}
-		} else {
-			if (time.getHours() < 4 || 19 <= time.getHours()) {
-				document.body.style.background = "rgba(10, 10, 0, 1.0)";
-			} else if (time.getHours() < 5 || 18 <= time.getHours()) {
-				document.body.style.background = "rgba(247, 207, 110, 1.0)";
-			} else if (time.getHours() < 6 || 17 <= time.getHours()) {
-				document.body.style.background = "rgba(110, 230, 233, 1.0)";
-			} else {
-				document.body.style.background = "rgba(93, 198, 255, 1.0)";
-			}
-		}
-	} else {
-		document.body.style.background = listBackground[UserSettings.BackgroundColor].color;
-	}
 }
 
 function
