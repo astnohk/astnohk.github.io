@@ -35,6 +35,8 @@ var FcelMainWindow;
 var FcelApplication;
 var WaveSimulatorWindow;
 var WaveSimulatorApplication;
+var GalaxySimulatorWindow;
+var GalaxySimulatorApplication;
 
 function
 initSystem()
@@ -53,12 +55,20 @@ initSystem()
 	FcelApplication = new Fcel(SystemRoot, FcelMainWindow);
 
 	// * Wave simulator
-	var WaveSimulatorWindow = SystemRoot.createWindow({id: "WaveSimulatorWindow", className: "Contents", noCloseButton: null});
+	WaveSimulatorWindow = SystemRoot.createWindow({id: "WaveSimulatorWindow", className: "Contents", noCloseButton: null});
 	WaveSimulatorWindow.style.position = "relative";
 	WaveSimulatorWindow.style.top = "0px";
 	WaveSimulatorWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
 	Menu.appendChild(WaveSimulatorWindow);
 	WaveSimulatorApplication = new WaveSimulator(SystemRoot, WaveSimulatorWindow);
+
+	// * Galaxy simulator
+	GalaxySimulatorWindow = SystemRoot.createWindow({id: "GalaxySimulatorWindow", className: "Contents", noCloseButton: null});
+	GalaxySimulatorWindow.style.position = "relative";
+	GalaxySimulatorWindow.style.top = "0px";
+	GalaxySimulatorWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
+	Menu.appendChild(GalaxySimulatorWindow);
+	GalaxySimulatorApplication = new GalaxySimulator(SystemRoot, GalaxySimulatorWindow);
 
 	// * Menu Scaling
 	var MenuScalingFunction = function (e) {

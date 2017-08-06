@@ -16,3 +16,9 @@
 [submodule "lib/ECMASystem7"]
 	path = lib/ECMASystem7
 	url = https://github.com/astnohk/ECMASystem7.git
+[submodule "GalaxySimulator"]
+	path = GalaxySimulator
+	url = https://github.com/astnohk/GalaxySimulator.git
+[submodule "lib/GalaxySimulator"]
+	path = lib/GalaxySimulator
+	url = https://github.com/astnohk/GalaxySimulator.git
