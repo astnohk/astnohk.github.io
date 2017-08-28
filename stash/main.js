@@ -37,6 +37,8 @@ var WaveSimulatorWindow;
 var WaveSimulatorApplication;
 var GalaxySimulatorWindow;
 var GalaxySimulatorApplication;
+var HopfieldNetworkWindow;
+var HopfieldNetworkApplication;
 
 function
 initSystem()
@@ -69,6 +71,14 @@ initSystem()
 	GalaxySimulatorWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
 	Menu.appendChild(GalaxySimulatorWindow);
 	GalaxySimulatorApplication = new GalaxySimulator(SystemRoot, GalaxySimulatorWindow);
+
+	// * Hopfield network
+	HopfieldNetworkWindow = SystemRoot.createWindow({id: "HopfieldNetworkWindow", className: "Contents", noCloseButton: null});
+	HopfieldNetworkWindow.style.position = "relative";
+	HopfieldNetworkWindow.style.top = "0px";
+	HopfieldNetworkWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
+	Menu.appendChild(HopfieldNetworkWindow);
+	HopfieldNetworkApplication = new HopfieldNetwork(SystemRoot, HopfieldNetworkWindow);
 
 	// * Menu Scaling
 	var MenuScalingFunction = function (e) {

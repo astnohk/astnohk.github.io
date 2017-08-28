@@ -22,3 +22,6 @@
 [submodule "lib/GalaxySimulator"]
 	path = lib/GalaxySimulator
 	url = https://github.com/astnohk/GalaxySimulator.git
+[submodule "lib/HopfieldNetworkDemo"]
+	path = lib/HopfieldNetworkDemo
+	url = https://github.com/astnohk/HopfieldNetworkDemo.git
