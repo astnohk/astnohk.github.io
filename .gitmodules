@@ -25,3 +25,6 @@
 [submodule "lib/HopfieldNetworkDemo"]
 	path = lib/HopfieldNetworkDemo
 	url = https://github.com/astnohk/HopfieldNetworkDemo.git
+[submodule "lib/SVMDemo"]
+	path = lib/SVMDemo
+	url = https://github.com/astnohk/SVMDemo.git

@@ -39,6 +39,8 @@ var GalaxySimulatorWindow;
 var GalaxySimulatorApplication;
 var HopfieldNetworkWindow;
 var HopfieldNetworkApplication;
+var SVMWindow;
+var SVMApplication;
 
 function
 initSystem()
@@ -83,6 +85,15 @@ initSystem()
 	HopfieldNetworkWindow.fixWindow();
 	Menu.appendChild(HopfieldNetworkWindow);
 	HopfieldNetworkApplication = new HopfieldNetwork(SystemRoot, HopfieldNetworkWindow);
+
+	// * SVM
+	SVMWindow = SystemRoot.createWindow({id: "SVMWindow", className: "Contents", noCloseButton: null});
+	SVMWindow.style.position = "relative";
+	SVMWindow.style.top = "0px";
+	SVMWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
+	SVMWindow.fixWindow();
+	Menu.appendChild(SVMWindow);
+	SVMApplication = new SVM(SystemRoot, SVMWindow);
 
 	// * Menu Scaling
 	var MenuScalingFunction = function (e) {
