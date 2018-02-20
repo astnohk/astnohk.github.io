@@ -53,6 +53,7 @@ initSystem()
 	FcelMainWindow.style.position = "relative";
 	FcelMainWindow.style.top = "0px";
 	FcelMainWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
+	FcelMainWindow.fixWindow();
 	Menu.appendChild(FcelMainWindow);
 	FcelApplication = new Fcel(SystemRoot, FcelMainWindow);
 
@@ -61,6 +62,7 @@ initSystem()
 	WaveSimulatorWindow.style.position = "relative";
 	WaveSimulatorWindow.style.top = "0px";
 	WaveSimulatorWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
+	WaveSimulatorWindow.fixWindow();
 	Menu.appendChild(WaveSimulatorWindow);
 	WaveSimulatorApplication = new WaveSimulator(SystemRoot, WaveSimulatorWindow);
 
@@ -69,6 +71,7 @@ initSystem()
 	GalaxySimulatorWindow.style.position = "relative";
 	GalaxySimulatorWindow.style.top = "0px";
 	GalaxySimulatorWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
+	GalaxySimulatorWindow.fixWindow();
 	Menu.appendChild(GalaxySimulatorWindow);
 	GalaxySimulatorApplication = new GalaxySimulator(SystemRoot, GalaxySimulatorWindow);
 
@@ -77,6 +80,7 @@ initSystem()
 	HopfieldNetworkWindow.style.position = "relative";
 	HopfieldNetworkWindow.style.top = "0px";
 	HopfieldNetworkWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
+	HopfieldNetworkWindow.fixWindow();
 	Menu.appendChild(HopfieldNetworkWindow);
 	HopfieldNetworkApplication = new HopfieldNetwork(SystemRoot, HopfieldNetworkWindow);
 
