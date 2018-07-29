@@ -28,3 +28,12 @@
 [submodule "lib/SVMDemo"]
 	path = lib/SVMDemo
 	url = https://github.com/astnohk/SVMDemo.git
+[submodule "lib/Perceptron"]
+	path = lib/Perceptron
+	url = https://github.com/astnohk/PerceptronDemo.git
+[submodule "lib/PerceptronDemo"]
+	path = lib/PerceptronDemo
+	url = https://github.com/astnohk/PerceptronDemo.git
+[submodule "lib/ECMALibs"]
+	path = lib/ECMALibs
+	url = https://github.com/astnohk/ECMALibs.git
