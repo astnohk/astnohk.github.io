@@ -41,6 +41,8 @@ var HopfieldNetworkWindow;
 var HopfieldNetworkApplication;
 var SVMWindow;
 var SVMApplication;
+var PerceptronWindow;
+var PerceptronApplication;
 
 function
 initSystem()
@@ -94,6 +96,15 @@ initSystem()
 	SVMWindow.fixWindow();
 	Menu.appendChild(SVMWindow);
 	SVMApplication = new SVM(SystemRoot, SVMWindow);
+
+	// * Perceptron
+	PerceptronWindow = SystemRoot.createWindow({id: "PerceptronWindow", className: "Contents", noCloseButton: null});
+	PerceptronWindow.style.position = "relative";
+	PerceptronWindow.style.top = "0px";
+	PerceptronWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
+	PerceptronWindow.fixWindow();
+	Menu.appendChild(PerceptronWindow);
+	PerceptronApplication = new Perceptron(SystemRoot, PerceptronWindow);
 
 	// * Menu Scaling
 	var MenuScalingFunction = function (e) {
