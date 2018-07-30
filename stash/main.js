@@ -24,7 +24,14 @@ var listBackground = {
     blue: {name: "Blue", color: "rgb(0, 0, 128)"},
     black: {name: "Black", color: "rgb(0, 0, 0)"}};
 
+// Menu
 var MenuScaling = 0.25;
+var MenuPadding = 10;
+var MenuContentMargin = 10;
+var MenuContentsSize = {
+	height: 800,
+	width: 800};
+var MenuContentsTransitionDuration = 0.5;
 
 
 
@@ -53,91 +60,112 @@ initSystem()
 	SystemRoot = new ECMASystem(document.body);
 
 	// * Fcel
-	FcelMainWindow = SystemRoot.createWindow({id: "FcelMainWindow", className: "Contents", noCloseButton: null});
-	FcelMainWindow.style.position = "relative";
-	FcelMainWindow.style.top = "0px";
-	FcelMainWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
-	FcelMainWindow.fixWindow();
-	Menu.appendChild(FcelMainWindow);
+	FcelMainWindow = createMenuContent({id: "FcelMainWindow", className: "Contents", noCloseButton: null});
 	FcelApplication = new Fcel(SystemRoot, FcelMainWindow);
 
 	// * Wave simulator
-	WaveSimulatorWindow = SystemRoot.createWindow({id: "WaveSimulatorWindow", className: "Contents", noCloseButton: null});
-	WaveSimulatorWindow.style.position = "relative";
-	WaveSimulatorWindow.style.top = "0px";
-	WaveSimulatorWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
-	WaveSimulatorWindow.fixWindow();
-	Menu.appendChild(WaveSimulatorWindow);
+	WaveSimulatorWindow = createMenuContent({id: "WaveSimulatorWindow", className: "Contents", noCloseButton: null});
 	WaveSimulatorApplication = new WaveSimulator(SystemRoot, WaveSimulatorWindow);
 
 	// * Galaxy simulator
-	GalaxySimulatorWindow = SystemRoot.createWindow({id: "GalaxySimulatorWindow", className: "Contents", noCloseButton: null});
-	GalaxySimulatorWindow.style.position = "relative";
-	GalaxySimulatorWindow.style.top = "0px";
-	GalaxySimulatorWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
-	GalaxySimulatorWindow.fixWindow();
-	Menu.appendChild(GalaxySimulatorWindow);
+	GalaxySimulatorWindow = createMenuContent({id: "GalaxySimulatorWindow", className: "Contents", noCloseButton: null});
 	GalaxySimulatorApplication = new GalaxySimulator(SystemRoot, GalaxySimulatorWindow);
 
 	// * Hopfield network
-	HopfieldNetworkWindow = SystemRoot.createWindow({id: "HopfieldNetworkWindow", className: "Contents", noCloseButton: null});
-	HopfieldNetworkWindow.style.position = "relative";
-	HopfieldNetworkWindow.style.top = "0px";
-	HopfieldNetworkWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
-	HopfieldNetworkWindow.fixWindow();
-	Menu.appendChild(HopfieldNetworkWindow);
+	HopfieldNetworkWindow = createMenuContent({id: "HopfieldNetworkWindow", className: "Contents", noCloseButton: null});
 	HopfieldNetworkApplication = new HopfieldNetwork(SystemRoot, HopfieldNetworkWindow);
 
 	// * SVM
-	SVMWindow = SystemRoot.createWindow({id: "SVMWindow", className: "Contents", noCloseButton: null});
-	SVMWindow.style.position = "relative";
-	SVMWindow.style.top = "0px";
-	SVMWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
-	SVMWindow.fixWindow();
-	Menu.appendChild(SVMWindow);
+	SVMWindow = createMenuContent({id: "SVMWindow", className: "Contents", noCloseButton: null});
 	SVMApplication = new SVM(SystemRoot, SVMWindow);
 
 	// * Perceptron
-	PerceptronWindow = SystemRoot.createWindow({id: "PerceptronWindow", className: "Contents", noCloseButton: null});
-	PerceptronWindow.style.position = "relative";
-	PerceptronWindow.style.top = "0px";
-	PerceptronWindow.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
-	PerceptronWindow.fixWindow();
-	Menu.appendChild(PerceptronWindow);
+	PerceptronWindow = createMenuContent({id: "PerceptronWindow", className: "Contents", noCloseButton: null});
 	PerceptronApplication = new Perceptron(SystemRoot, PerceptronWindow);
 
-	// * Menu Scaling
-	var MenuScalingFunction = function (e) {
-		let MenuChildren = Array.from(Menu.children);
-		let target = null;
-		if (typeof e !== "undefined") {
-			target = e.target;
-			while (target != null) {
-				if (MenuChildren.indexOf(target) >= 0) {
-					break;
-				}
-				target = target.parentNode;
-			}
-		}
-		for (let i = 0; i < MenuChildren.length; i++) {
-			if (MenuChildren[i] != target) {
-				let style = window.getComputedStyle(MenuChildren[i]);
-				MenuChildren[i].style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
-				MenuChildren[i].style.marginRight = -parseInt(style.width, 10) * (1.0 - MenuScaling) + "px";
-				MenuChildren[i].style.marginBottom = -parseInt(style.height, 10) * (1.0 - MenuScaling) + "px";
-			}
-		}
-		if (target !== null) {
-			target.style.transform = "scale(1.0, 1.0)";
-			target.style.marginRight = "0";
-			target.style.marginBottom = "0";
-		}
-	    };
 	MenuScalingFunction(); // Initialize
 	Menu.addEventListener("mousedown", MenuScalingFunction, false);
 	Menu.addEventListener("touchstart", MenuScalingFunction, false);
+	// Set menu alignment observer
+	Menu.alignmentLoop = setInterval(
+	    function () { MenuAlignment(); },
+	    100);
 }
 
+function createMenuContent(init) {
+	let MenuChildren = Array.from(Menu.children);
+	let w = SystemRoot.createWindow(init);
+	w.style.position = "absolute";
+	w.style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
+	w.style.transitionDuration = MenuContentsTransitionDuration + "s";
+	w.fixWindow();
+	Menu.appendChild(w);
+	return w;
+}
+
+function MenuAlignment() {
+	let MenuChildren = Array.from(Menu.children);
+	let menu_rect = Menu.getBoundingClientRect();
+	let prev_rect = null;
+	let lineMaxHeight = 0;
+	let maxRight = 0;
+	let maxBottom = 0;
+	for (let i = 0; i < MenuChildren.length; i++) {
+		let rect = MenuChildren[i].getBoundingClientRect();
+		let origin = {x: MenuPadding, y: MenuPadding};
+		if (prev_rect) {
+			origin.x = (prev_rect.x - menu_rect.x) + prev_rect.width + MenuContentMargin;
+			origin.y = (prev_rect.y - menu_rect.y);
+		}
+		if (origin.x + rect.width + menu_rect.x > window.innerWidth) {
+			origin.x = MenuPadding;
+			origin.y += lineMaxHeight + MenuContentMargin;
+			lineMaxHeight = 0;
+		}
+		MenuChildren[i].style.left = origin.x + "px";
+		MenuChildren[i].style.top = origin.y + "px";
+		if (lineMaxHeight < rect.height) {
+			lineMaxHeight = rect.height;
+		}
+		if (maxRight < rect.right - menu_rect.x) {
+			maxRight = rect.right - menu_rect.x;
+		}
+		if (maxBottom < rect.bottom - menu_rect.y) {
+			maxBottom = rect.bottom - menu_rect.y;
+		}
+		// Get update BoundingClientRect
+		prev_rect = MenuChildren[i].getBoundingClientRect();
+	}
+	// Set Menu size
+	Menu.style.width = maxRight + MenuPadding + "px";
+	Menu.style.height = maxBottom + MenuPadding + "px";
+}
+
+// Menu Scaling
+function MenuScalingFunction(e) {
+	let MenuChildren = Array.from(Menu.children);
+	let target = null;
+	if (typeof e !== "undefined") {
+		target = e.target;
+		while (target != null) {
+			if (MenuChildren.indexOf(target) >= 0) {
+				break;
+			}
+			target = target.parentNode;
+		}
+	}
+	for (let i = 0; i < MenuChildren.length; i++) {
+		if (MenuChildren[i] != target) {
+			let style = window.getComputedStyle(MenuChildren[i]);
+			MenuChildren[i].style.transform = "scale(" + MenuScaling + "," + MenuScaling + ")";
+		}
+	}
+	if (target !== null) {
+		target.style.transform = "scale(1.0, 1.0)";
+		target.style.marginRight = "0";
+		target.style.marginBottom = "0";
+	}
+}
 
 
 
