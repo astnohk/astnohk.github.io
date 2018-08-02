@@ -13,6 +13,9 @@
 	background-color: rgba(180, 180, 255, 0.1);
 	box-shadow: 0px 0px 50px 0px rgba(230, 230, 255, 0.4),
 	    inset 0px 0px 50px 0px rgba(230, 230, 255, 0.2);
+	transition-property: width, height;
+	transition-duration: 0.1s;
+	transition-timing-function: linear;
 }
 
 .Contents {
@@ -25,7 +28,7 @@
 	width: 800px;
 	transform: scale(0.5, 0.5);
 	transform-origin: 0 0 0;
-	transition-property: transform, margin;
+	transition-property: top, left, transform;
 	transition-duration: 0.5s;
 	transition-timing-function: linear;
 }
