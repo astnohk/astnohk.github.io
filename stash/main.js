@@ -90,6 +90,8 @@ initSystem()
 	Menu.alignmentLoop = setInterval(
 	    function () { MenuAlignment(); },
 	    100);
+	// Randomly change the Menu contents size
+	MenuContentResizeRandomly();
 }
 
 function createMenuContent(init) {
@@ -103,15 +105,36 @@ function createMenuContent(init) {
 	return w;
 }
 
+function MenuContentResizeRandomly() {
+	let MenuChildren = Array.from(Menu.children);
+	for (let i = 0; i < MenuChildren.length; i++) {
+		let s = Math.round(Math.random() * 1000);
+		let w = 0;
+		let h = 0;
+		if (Math.random() > 0.7) {
+			w = s;
+			h = s;
+		} else {
+			w = s;
+			h = Math.round(Math.random() * 1000);
+		}
+		MenuChildren[i].style.width = 400 + w + "px";
+		MenuChildren[i].style.height = 400 + h + "px";
+	}
+}
+
 function MenuAlignment() {
+	let gapThreshold = 50; // minimum gap in px
+
 	let MenuChildren = Array.from(Menu.children);
 	let menu_rect = Menu.getBoundingClientRect();
-	let bottomLine = [];
 	let maxRight = 0;
 	let maxBottom = 0;
-	for (let x = 0; x < window.innerWidth - menu_rect.x - 2 * MenuPadding; x++) {
+	let bottomLine = new Array(Math.ceil(window.innerWidth - menu_rect.x - 2 * MenuPadding));
+	for (let x = 0; x < bottomLine.length; x++) {
 		bottomLine[x] = 0;
 	}
+
 	for (let i = 0; i < MenuChildren.length; i++) {
 		let rect = MenuChildren[i].getBoundingClientRect();
 		let searching = [{x: 0, y: 0}];
@@ -119,10 +142,10 @@ function MenuAlignment() {
 		let maxBottomLine = 0;
 		// Search candidates
 		for (let x = 0; x < bottomLine.length; x++) {
-			if (x > 0 && bottomLine[x] < bottomLine[x - 1]) {
+			if (x > 0 && bottomLine[x - 1] - bottomLine[x] >= gapThreshold) {
 				searching.push({
-					x: x,
-					y: bottomLine[x]});
+				    x: x,
+				    y: bottomLine[x]});
 			}
 			for (let n = 0; n < searching.length; n++) {
 				if (bottomLine[x] > searching[n].y) {
@@ -131,7 +154,7 @@ function MenuAlignment() {
 				// Check if the box with margin can put in the searching coordinate
 				if (x - searching[n].x + 1 >= rect.width + MenuContentMargin) {
 					// Add to cnadidates and eliminate it from searching
-					candidates = candidates.concat(searching.splice(0, 1));
+					candidates.push(searching.splice(n, 1)[0]);
 					n--;
 				}
 			}
@@ -142,7 +165,7 @@ function MenuAlignment() {
 		}
 		// if contents width over the window size
 		if (candidates.length == 0) {
-			candidates = candidates.concat({
+			candidates.push({
 			    x: 0,
 			    y: maxBottomLine});
 		}
@@ -150,16 +173,20 @@ function MenuAlignment() {
 		let origin = {
 		    x: candidates[0].x,
 		    y: candidates[0].y};
-		for (let k = 1; k < candidates.length; k++) {
-			if (candidates[k].y < origin.y) {
-				origin.x = candidates[k].x;
-				origin.y = candidates[k].y;
+		for (let n = 1; n < candidates.length; n++) {
+			if (candidates[n].y < origin.y) {
+				origin.x = candidates[n].x;
+				origin.y = candidates[n].y;
 			}
 		}
 		// Update bottomLine and max{Bottom | Right}
 		for (let k = 0; k < rect.width + MenuContentMargin; k++) {
-			bottomLine[origin.x + k] += rect.height + MenuContentMargin;
+			if (origin.x + k < bottomLine.length) {
+				bottomLine[Math.round(origin.x) + k] =
+				    origin.y + rect.height + MenuContentMargin;
+			}
 		}
+		// Update max of Bottom and Right
 		if (origin.y + rect.height > maxBottom) {
 			maxBottom = origin.y + rect.height;
 		}
