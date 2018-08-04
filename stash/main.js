@@ -106,39 +106,73 @@ function createMenuContent(init) {
 function MenuAlignment() {
 	let MenuChildren = Array.from(Menu.children);
 	let menu_rect = Menu.getBoundingClientRect();
-	let prev_rect = null;
-	let lineMaxHeight = 0;
+	let bottomLine = [];
 	let maxRight = 0;
 	let maxBottom = 0;
+	for (let x = 0; x < window.innerWidth - menu_rect.x - 2 * MenuPadding; x++) {
+		bottomLine[x] = 0;
+	}
 	for (let i = 0; i < MenuChildren.length; i++) {
 		let rect = MenuChildren[i].getBoundingClientRect();
-		let origin = {x: MenuPadding, y: MenuPadding};
-		if (prev_rect) {
-			origin.x = (prev_rect.x - menu_rect.x) + prev_rect.width + MenuContentMargin;
-			origin.y = (prev_rect.y - menu_rect.y);
+		let searching = [{x: 0, y: 0}];
+		let candidates = [];
+		let maxBottomLine = 0;
+		// Search candidates
+		for (let x = 0; x < bottomLine.length; x++) {
+			if (x > 0 && bottomLine[x] < bottomLine[x - 1]) {
+				searching.push({
+					x: x,
+					y: bottomLine[x]});
+			}
+			for (let n = 0; n < searching.length; n++) {
+				if (bottomLine[x] > searching[n].y) {
+					searching[n].y = bottomLine[x];
+				}
+				// Check if the box with margin can put in the searching coordinate
+				if (x - searching[n].x + 1 >= rect.width + MenuContentMargin) {
+					// Add to cnadidates and eliminate it from searching
+					candidates = candidates.concat(searching.splice(0, 1));
+					n--;
+				}
+			}
+			// Get max of bottomLine
+			if (bottomLine[x] > maxBottomLine) {
+				maxBottomLine = bottomLine[x];
+			}
 		}
-		if (origin.x + rect.width + menu_rect.x > window.innerWidth) {
-			origin.x = MenuPadding;
-			origin.y += lineMaxHeight + MenuContentMargin;
-			lineMaxHeight = 0;
+		// if contents width over the window size
+		if (candidates.length == 0) {
+			candidates = candidates.concat({
+			    x: 0,
+			    y: maxBottomLine});
 		}
-		MenuChildren[i].style.left = origin.x + "px";
-		MenuChildren[i].style.top = origin.y + "px";
-		if (lineMaxHeight < rect.height) {
-			lineMaxHeight = rect.height;
+		// Select origin point
+		let origin = {
+		    x: candidates[0].x,
+		    y: candidates[0].y};
+		for (let k = 1; k < candidates.length; k++) {
+			if (candidates[k].y < origin.y) {
+				origin.x = candidates[k].x;
+				origin.y = candidates[k].y;
+			}
 		}
-		if (maxRight < rect.right - menu_rect.x) {
-			maxRight = rect.right - menu_rect.x;
+		// Update bottomLine and max{Bottom | Right}
+		for (let k = 0; k < rect.width + MenuContentMargin; k++) {
+			bottomLine[origin.x + k] += rect.height + MenuContentMargin;
 		}
-		if (maxBottom < rect.bottom - menu_rect.y) {
-			maxBottom = rect.bottom - menu_rect.y;
+		if (origin.y + rect.height > maxBottom) {
+			maxBottom = origin.y + rect.height;
 		}
-		// Get update BoundingClientRect
-		prev_rect = MenuChildren[i].getBoundingClientRect();
+		if (origin.x + rect.width > maxRight) {
+			maxRight = origin.x + rect.width;
+		}
+		// Set styles
+		MenuChildren[i].style.left = origin.x + MenuPadding + "px";
+		MenuChildren[i].style.top = origin.y + MenuPadding + "px";
 	}
 	// Set Menu size
-	Menu.style.width = maxRight + MenuPadding + "px";
-	Menu.style.height = maxBottom + MenuPadding + "px";
+	Menu.style.width = maxRight + 2 * MenuPadding + "px";
+	Menu.style.height = maxBottom + 2 * MenuPadding + "px";
 }
 
 // Menu Scaling
