@@ -130,62 +130,80 @@ function MenuAlignment() {
 	let menu_rect = Menu.getBoundingClientRect();
 	let maxRight = 0;
 	let maxBottom = 0;
-	let bottomLine = new Array(Math.ceil(window.innerWidth - menu_rect.x - 2 * MenuPadding));
-	for (let x = 0; x < bottomLine.length; x++) {
-		bottomLine[x] = 0;
-	}
-
+	let fixed = [];
 	for (let i = 0; i < MenuChildren.length; i++) {
 		let rect = MenuChildren[i].getBoundingClientRect();
-		let searching = [{x: 0, y: 0}];
-		let candidates = [];
-		let maxBottomLine = 0;
+		candidates = [];
 		// Search candidates
-		for (let x = 0; x < bottomLine.length; x++) {
-			if (x > 0 && bottomLine[x - 1] - bottomLine[x] >= gapThreshold) {
-				searching.push({
-				    x: x,
-				    y: bottomLine[x]});
+		for (let k = 0; k < fixed.length; k++) {
+			candidates.push({
+			    x: fixed[k].x_rb + 1,
+			    y: fixed[k].y});
+			candidates.push({
+			    x: fixed[k].x,
+			    y: fixed[k].y_rb + 1});
+		}
+		for (let n = 0; n < candidates.length; n++) {
+			if (menu_rect.x + candidates[n].x + rect.width > window.innerWidth) {
+				// Out of the window
+				candidates.splice(n, 1);
+				n--;
+				continue;
 			}
-			for (let n = 0; n < searching.length; n++) {
-				if (bottomLine[x] > searching[n].y) {
-					searching[n].y = bottomLine[x];
-				}
-				// Check if the box with margin can put in the searching coordinate
-				if (x - searching[n].x + 1 >= rect.width + MenuContentMargin) {
-					// Add to cnadidates and eliminate it from searching
-					candidates.push(searching.splice(n, 1)[0]);
+			let x_rb = candidates[n].x + rect.width + MenuContentMargin;
+			let y_rb = candidates[n].y + rect.height + MenuContentMargin;
+			let x_c = (candidates[n].x + x_rb) * 0.5;
+			let y_c = (candidates[n].y + y_rb) * 0.5;
+			let w = x_rb - candidates[n].x;
+			let h = y_rb - candidates[n].y;
+			for (let k = 0; k < fixed.length; k++) {
+				let x_fc = (fixed[k].x + fixed[k].x_rb) * 0.5;
+				let y_fc = (fixed[k].y + fixed[k].y_rb) * 0.5;
+				let w_f = fixed[k].x_rb - fixed[k].x;
+				let h_f = fixed[k].y_rb - fixed[k].y;
+				// Check collision
+				if (Math.abs(x_c - x_fc) < (w + w_f) * 0.5 &&
+				    Math.abs(y_c - y_fc) < (h + h_f) * 0.5) {
+					if (Math.abs(candidates[n].x - fixed[k].x) > 5) {
+						candidates.push({
+						    x: candidates[n].x,
+						    y: fixed[k].y_rb + 1});
+					}
+					if (Math.abs(candidates[n].y - fixed[k].y) > 5) {
+						candidates.push({
+						    x: fixed[k].x_rb + 1,
+						    y: candidates[n].y});
+					}
+					// Delete the candidate
+					candidates.splice(n, 1);
 					n--;
+					k = fixed.length;
+					continue;
 				}
-			}
-			// Get max of bottomLine
-			if (bottomLine[x] > maxBottomLine) {
-				maxBottomLine = bottomLine[x];
 			}
 		}
 		// if contents width over the window size
 		if (candidates.length == 0) {
 			candidates.push({
 			    x: 0,
-			    y: maxBottomLine});
+			    y: maxBottom + MenuContentMargin});
 		}
 		// Select origin point
 		let origin = {
 		    x: candidates[0].x,
 		    y: candidates[0].y};
 		for (let n = 1; n < candidates.length; n++) {
-			if (candidates[n].y < origin.y) {
+			if (candidates[n].y < origin.y ||
+			    (candidates[n].x < origin.x && candidates[n].y == origin.y)) {
 				origin.x = candidates[n].x;
 				origin.y = candidates[n].y;
 			}
 		}
-		// Update bottomLine and max{Bottom | Right}
-		for (let k = 0; k < rect.width + MenuContentMargin; k++) {
-			if (origin.x + k < bottomLine.length) {
-				bottomLine[Math.round(origin.x) + k] =
-				    origin.y + rect.height + MenuContentMargin;
-			}
-		}
+		// Add box to fixed
+		fixed.push({
+			x: origin.x, y: origin.y,
+			x_rb: origin.x + rect.width + MenuContentMargin,
+			y_rb: origin.y + rect.height + MenuContentMargin});
 		// Update max of Bottom and Right
 		if (origin.y + rect.height > maxBottom) {
 			maxBottom = origin.y + rect.height;
