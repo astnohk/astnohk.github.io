@@ -95,7 +95,7 @@ initSystem()
 	// Randomly change the Menu contents size
 	if (Math.random() < 0.25) {
 		MenuContentResizeYojohan();
-	} else {
+	} else if (Math.random() < 0.4) {
 		MenuContentResizeRandomly();
 	}
 }
