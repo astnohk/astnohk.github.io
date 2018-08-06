@@ -91,7 +91,11 @@ initSystem()
 	    function () { MenuAlignment(); },
 	    100);
 	// Randomly change the Menu contents size
-	MenuContentResizeRandomly();
+	if (Math.random() < 0.25) {
+		MenuContentResizeYojohan();
+	} else {
+		MenuContentResizeRandomly();
+	}
 }
 
 function createMenuContent(init) {
@@ -103,6 +107,22 @@ function createMenuContent(init) {
 	w.fixWindow();
 	Menu.appendChild(w);
 	return w;
+}
+
+function MenuContentResizeYojohan() {
+	let MenuChildren = Array.from(Menu.children);
+	if (MenuChildren.length > 4) {
+		MenuChildren[0].style.width = "2000px";
+		MenuChildren[0].style.height = "1000px";
+		MenuChildren[1].style.width = "1000px";
+		MenuChildren[1].style.height = "2000px";
+		MenuChildren[2].style.width = "1000px";
+		MenuChildren[2].style.height = "2000px";
+		MenuChildren[3].style.width = "2000px";
+		MenuChildren[3].style.height = "1000px";
+		MenuChildren[4].style.width = "915px";
+		MenuChildren[4].style.height = "915px";
+	}
 }
 
 function MenuContentResizeRandomly() {
