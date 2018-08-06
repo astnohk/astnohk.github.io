@@ -25,6 +25,8 @@ var listBackground = {
     black: {name: "Black", color: "rgb(0, 0, 0)"}};
 
 // Menu
+var MenuWidthFittingWithWindow = true;
+var MenuWidth = 800;
 var MenuScaling = 0.25;
 var MenuPadding = 10;
 var MenuContentMargin = 10;
@@ -111,6 +113,8 @@ function createMenuContent(init) {
 
 function MenuContentResizeYojohan() {
 	let MenuChildren = Array.from(Menu.children);
+	MenuWidthFittingWithWindow = false;
+	MenuWidth = 800;
 	if (MenuChildren.length > 4) {
 		MenuChildren[0].style.width = "2000px";
 		MenuChildren[0].style.height = "1000px";
@@ -127,6 +131,7 @@ function MenuContentResizeYojohan() {
 
 function MenuContentResizeRandomly() {
 	let MenuChildren = Array.from(Menu.children);
+	MenuWidthFittingWithWindow = true;
 	for (let i = 0; i < MenuChildren.length; i++) {
 		let s = Math.round(Math.random() * 1000);
 		let w = 0;
@@ -151,6 +156,9 @@ function MenuAlignment() {
 	let maxRight = 0;
 	let maxBottom = 0;
 	let fixed = [];
+	if (MenuWidthFittingWithWindow) {
+		MenuWidth = window.innerWidth - menu_rect.x;
+	}
 	for (let i = 0; i < MenuChildren.length; i++) {
 		let rect = MenuChildren[i].getBoundingClientRect();
 		candidates = [];
@@ -164,7 +172,7 @@ function MenuAlignment() {
 			    y: fixed[k].y_rb + 1});
 		}
 		for (let n = 0; n < candidates.length; n++) {
-			if (menu_rect.x + candidates[n].x + rect.width > window.innerWidth) {
+			if (candidates[n].x + rect.width > MenuWidth) {
 				// Out of the window
 				candidates.splice(n, 1);
 				n--;
